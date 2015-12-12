@@ -34,6 +34,11 @@ public class FileOpener {
 	}
 	
 
+	public File getCurrentDirectory() {
+		return currentDirectory;
+	}
+	
+	
 	
 	/**
 	 * ファイルダイアログにイベントがあったときに、対応するファイルを特定する
@@ -51,6 +56,7 @@ public class FileOpener {
 				ds = JsonFileReader.generateDataSet(filepath);
 			if(filepath.endsWith("csv"))
 				ds = CsvFileReader.generateDataSet(filepath);
+			canvas.setCurrentDirectory(currentDirectory.getAbsolutePath());
 			return ds;
 		} else if (selected == JFileChooser.CANCEL_OPTION) { // cancel selected
 			return null;
@@ -59,5 +65,5 @@ public class FileOpener {
 		return null;
 	}
 	
-
+	
 }

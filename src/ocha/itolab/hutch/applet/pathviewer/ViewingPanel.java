@@ -10,22 +10,26 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import ocha.itolab.hutch.core.data.*;
 import ocha.itolab.hutch.core.tool.*;
 
+
 public class ViewingPanel extends JPanel  {
 
-	public JButton  fileOpenButton, viewResetButton, clusteringButton;
-	public JRadioButton pathButton, populationButton, stopnessButton, directionButton;
-	public JTextField numClusterField, numDivideField, alphaField;
-	public JSlider clusteringRatioSlider, intensityRatioSlider;
+	public JButton  fileOpenButton, viewResetButton, aggregateButton, imageSaveButton;
+	public JRadioButton pathButton, populationButton, directionButton;
+	public JRadioButton allButton, stopButton, passButton, ratioButton;
+	public JTextField minHourField, maxHourField, imageFileField;
+	public JSlider intensityRatioSlider;
 	public Container container;
-	
+	JTabbedPane pane = null;
+
 	/* Selective canvas */
 	Canvas canvas;
 	FileOpener fileOpener;
+	ParameterPanel ppanel;
 	DataSet ds;
+	
 	
 	/* Cursor Sensor */
 	boolean cursorSensorFlag = false;
@@ -34,6 +38,8 @@ public class ViewingPanel extends JPanel  {
 	ButtonListener bl = null;
 	RadioButtonListener rbl = null;
 	SliderListener sl = null;
+
+	
 	
 	public ViewingPanel() {
 		// super class init
@@ -47,66 +53,100 @@ public class ViewingPanel extends JPanel  {
 		// （起動したとき右に出るパネルの設定）
 		//
 		JPanel p1 = new JPanel();
-		p1.setLayout(new GridLayout(11,1));
+		p1.setLayout(new GridLayout(20,1));
+		
 		fileOpenButton = new JButton("JSON/CSV File Open");
-		viewResetButton = new JButton("View Reset");
-		clusteringButton = new JButton("Clustering");
 		p1.add(fileOpenButton);
+		
+		viewResetButton = new JButton("View Reset");
 		p1.add(viewResetButton);
-		p1.add(clusteringButton);
-
-		JPanel pp1 = new JPanel();
-		pp1.setLayout(new GridLayout(1,2));
-		numClusterField = new JTextField("3");
-		pp1.add(new JLabel("Num. cluster"));
-		pp1.add(numClusterField);
-		p1.add(pp1);
-	
-		JPanel pp2 = new JPanel();
-		pp2.setLayout(new GridLayout(1,2));
-		numDivideField = new JTextField("10");
-		pp2.add(new JLabel("Num. divide"));
-		pp2.add(numDivideField);
-		p1.add(pp2);
 		
-		JPanel pp3 = new JPanel();
-		JPanel ppp3 = new JPanel();
-		pp3.setLayout(new GridLayout(2,1));
-		ppp3.setLayout(new GridLayout(1,2));
-		ppp3.add(new JLabel("Clustering ratio"));
-		alphaField = new JTextField("0.5");
-		ppp3.add(alphaField);
-		clusteringRatioSlider = new JSlider(0, 100, 50);
-		pp3.add(ppp3);
-		pp3.add(clusteringRatioSlider);
-		p1.add(pp3);
-		
-		JPanel pp4 = new JPanel();
-		pp4.setLayout(new GridLayout(2,1));
-		pp4.add(new JLabel("Intensity ratio"));
+		JPanel pir = new JPanel();
+		pir.setLayout(new GridLayout(2,1));
+		pir.add(new JLabel("Intensity ratio"));
 		intensityRatioSlider = new JSlider(0, 100, 50);
-		pp4.add(intensityRatioSlider);
-		p1.add(pp4);
+		pir.add(intensityRatioSlider);
+		p1.add(pir);
 		
+		JPanel prb1 = new JPanel();
+		prb1.setLayout(new GridLayout(1,2));
+		JPanel prb2 = new JPanel();
+		prb2.setLayout(new GridLayout(1,2));
 		pathButton = new JRadioButton("Path");
 		populationButton = new JRadioButton("Population");
-		stopnessButton = new JRadioButton("Stopness");
 		directionButton = new JRadioButton("Direction");
-		p1.add(pathButton);
-		p1.add(populationButton);
-		p1.add(stopnessButton);
-		p1.add(directionButton);
+		prb1.add(pathButton);
+		prb1.add(populationButton);
+		prb2.add(directionButton);
+		p1.add(prb1);
+		p1.add(prb2);
 		ButtonGroup group1 = new ButtonGroup();
 		group1.add(pathButton);
 		group1.add(populationButton);
-		group1.add(stopnessButton);
 		group1.add(directionButton);
+		
+		JPanel pminh = new JPanel();
+		pminh.setLayout(new GridLayout(1,2));
+		minHourField = new JTextField("0");
+		pminh.add(new JLabel("Min. hour"));
+		pminh.add(minHourField);
+		p1.add(pminh);
+		
+		JPanel pmaxh = new JPanel();
+		pmaxh.setLayout(new GridLayout(1,2));
+		maxHourField = new JTextField("24");
+		pmaxh.add(new JLabel("Max. hour"));
+		pmaxh.add(maxHourField);
+		p1.add(pmaxh);
+		
+		JPanel pck1 = new JPanel();
+		pck1.setLayout(new GridLayout(1,2));
+		JPanel pck2 = new JPanel();
+		pck2.setLayout(new GridLayout(1,2));
+		allButton = new JRadioButton("All");
+		stopButton = new JRadioButton("Stop");
+		passButton = new JRadioButton("Pass");
+		ratioButton = new JRadioButton("Ratio");
+		pck1.add(allButton);
+		pck1.add(stopButton);
+		pck2.add(passButton);
+		pck2.add(ratioButton);
+		p1.add(pck1);
+		p1.add(pck2);
+		ButtonGroup group2= new ButtonGroup();
+		group2.add(allButton);
+		group2.add(stopButton);
+		group2.add(passButton);
+		group2.add(ratioButton);
+		
+		aggregateButton = new JButton("Aggregate again");
+		p1.add(aggregateButton);
+		
+
+		
+		JPanel pif = new JPanel();
+		pif.setLayout(new GridLayout(1,2));
+		imageFileField = new JTextField("image.png");
+		pif.add(new JLabel("Image filename"));
+		pif.add(imageFileField);
+		p1.add(pif);
+		
+		imageSaveButton = new JButton("Image Save");
+		p1.add(imageSaveButton);
 		
 		//
 		// パネル群のレイアウト
 		//
-		this.setLayout(new GridLayout(2,1));
-		this.add(p1);
+		pane = new JTabbedPane();
+		pane.add(p1);
+		pane.setTabComponentAt(0, new JLabel("Main"));
+		this.add(pane);
+		
+		ppanel = new ParameterPanel();
+		pane.add(ppanel);
+		pane.setTabComponentAt(1, new JLabel("Parameters"));
+		pane.setMnemonicAt(1, KeyEvent.VK_0);
+		
 		
 		//
 		// リスナーの追加
@@ -130,6 +170,7 @@ public class ViewingPanel extends JPanel  {
 	 */
 	public void setCanvas(Object c) {
 		canvas = (Canvas) c;
+		ppanel.setCanvas(canvas);
 	}
 	
 	/**
@@ -157,8 +198,11 @@ public class ViewingPanel extends JPanel  {
 	public void addRadioButtonListener(ActionListener actionListener) {
 		pathButton.addActionListener(actionListener);
 		populationButton.addActionListener(actionListener);
-		stopnessButton.addActionListener(actionListener);
 		directionButton.addActionListener(actionListener);
+		allButton.addActionListener(actionListener);
+		stopButton.addActionListener(actionListener);
+		passButton.addActionListener(actionListener);
+		ratioButton.addActionListener(actionListener);
 	}
 
 	/**
@@ -168,12 +212,12 @@ public class ViewingPanel extends JPanel  {
 	public void addButtonListener(ActionListener actionListener) {
 		fileOpenButton.addActionListener(actionListener);
 		viewResetButton.addActionListener(actionListener);
-		clusteringButton.addActionListener(actionListener);
+		aggregateButton.addActionListener(actionListener);
+		imageSaveButton.addActionListener(actionListener);
 	}
 	
 	
 	public void addSliderListener(ChangeListener changeListener) {
-		clusteringRatioSlider.addChangeListener(changeListener);
 		intensityRatioSlider.addChangeListener(changeListener);
 	}
 
@@ -190,11 +234,24 @@ public class ViewingPanel extends JPanel  {
 			if (buttonPushed == populationButton) {
 				canvas.setDisplayMode(canvas.DISPLAY_POPULATION);
 			}
-			if (buttonPushed == stopnessButton) {
-				canvas.setDisplayMode(canvas.DISPLAY_STOPNESS);
-			}
 			if (buttonPushed == directionButton) {
 				canvas.setDisplayMode(canvas.DISPLAY_DIRECTION);
+			}
+			if (buttonPushed == allButton) {
+				if(ds != null)
+					ds.grid.setAggregateFlag(Grid.AGGREGATE_ALL);
+			}
+			if (buttonPushed == stopButton) {
+				if(ds != null)
+					ds.grid.setAggregateFlag(Grid.AGGREGATE_STOP);
+			}
+			if (buttonPushed == passButton) {
+				if(ds != null)
+					ds.grid.setAggregateFlag(Grid.AGGREGATE_PASS);
+			}
+			if (buttonPushed == ratioButton) {
+				if(ds != null)
+					ds.grid.setAggregateFlag(Grid.AGGREGATE_RATIO);
 			}
 			canvas.display();
 		}
@@ -209,7 +266,7 @@ public class ViewingPanel extends JPanel  {
 			JButton buttonPushed = (JButton) e.getSource();
 			if (buttonPushed == fileOpenButton) {
 				ds = fileOpener.getDataSet();
-				ds.setDivision(Integer.parseInt(numDivideField.getText()));
+				ppanel.setDataSet(ds);
 				canvas.setDataSet(ds);
 				canvas.display();
 			}
@@ -217,17 +274,16 @@ public class ViewingPanel extends JPanel  {
 				canvas.viewReset();
 				canvas.display();
 			}
-			if (buttonPushed == clusteringButton) {
-				int numd = Integer.parseInt(numDivideField.getText());
-				int numc = Integer.parseInt(numClusterField.getText());
-				if(ds != null) {
-					ds.setDivision(numd);
-					double alpha = Double.parseDouble(alphaField.getText());
-					ClusteringInvoker ci = new ClusteringInvoker();
-					ci.clustering(ds, numc, alpha);
-				}
-				canvas.setNumCluster(numc);
-				canvas.viewReset();
+			if (buttonPushed == aggregateButton) {
+				int min = Integer.parseInt(minHourField.getText());
+				ds.grid.setMinHour(min);
+				int max = Integer.parseInt(maxHourField.getText());
+				ds.grid.setMaxHour(max);
+				ds.grid.aggregate();
+				canvas.display();
+			}
+			if(buttonPushed == imageSaveButton) {
+				canvas.saveImageFile(imageFileField.getText());
 				canvas.display();
 			}
 		}
@@ -236,10 +292,6 @@ public class ViewingPanel extends JPanel  {
 	class SliderListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e) {
 			JSlider sliderChanged = (JSlider) e.getSource();
-			if (sliderChanged == clusteringRatioSlider) {
-				double t = (double)clusteringRatioSlider.getValue() / 100.0;
-				alphaField.setText(Double.toString(t));
-			}
 			if (sliderChanged == intensityRatioSlider) {
 				double t = (double)intensityRatioSlider.getValue() / 100.0;
 				canvas.setIntensityRatio(t);

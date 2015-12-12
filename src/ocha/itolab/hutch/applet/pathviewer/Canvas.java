@@ -35,7 +35,7 @@ public class Canvas extends JPanel {
 	int dragMode, width, height, mouseX, mouseY;
 	double linewidth = 1.0, bgR = 0.0, bgG = 0.0, bgB = 0.0;
 	int animateCounter = -1;
-	
+
 	
 	/**
 	 * Constructor
@@ -111,6 +111,24 @@ public class Canvas extends JPanel {
 	}
 	
 
+	public void setCurrentDirectory(String path) {
+		drawer.setCurrentDirectory(path);
+	}
+	
+	
+	public void setImageShiftX(double t) {
+		drawer.setImageShiftX(t);
+	}
+	
+	public void setImageShiftY(double t) {
+		drawer.setImageShiftY(t);
+	}
+	
+	public void setImageScale(double t) {
+		drawer.setImageScale(t);
+	}
+	
+	
 	/**
 	 * 再描画
 	 */
@@ -280,6 +298,13 @@ public class Canvas extends JPanel {
 		
 	}
 	
+	
+	/**
+	 * 画像ファイルに出力する
+	 */
+	public void saveImageFile(String filename) {
+		drawer.setSaveImage(filename);
+	}
 
 	
 	/**

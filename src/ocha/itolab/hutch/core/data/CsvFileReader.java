@@ -2,6 +2,7 @@ package ocha.itolab.hutch.core.data;
 
 import java.io.*;
 import java.util.*;
+import java.time.*;
 
 public class CsvFileReader {
 	static BufferedReader reader = null;
@@ -29,6 +30,7 @@ public class CsvFileReader {
 				String time = token.nextToken();
 				double x = Double.parseDouble(token.nextToken());
 				double y = Double.parseDouble(token.nextToken());
+				y *= -1.0;
 				if(x > TOO_LARGE || x < -TOO_LARGE || y > TOO_LARGE || y < -TOO_LARGE)
 					isValid = false;
 
@@ -47,7 +49,7 @@ public class CsvFileReader {
 				}
 				
 				// Set position to the string
-				ols.addOneOriginalPosition(x, y);
+				ols.addOneOriginalPosition(x, y, Long.parseLong(time));
 				ppid = pid;
 			}
 		} catch(Exception e) {

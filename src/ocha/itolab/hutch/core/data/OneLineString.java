@@ -2,6 +2,8 @@ package ocha.itolab.hutch.core.data;
 
 import java.util.*;
 
+import javax.print.attribute.standard.RequestingUserName;
+
 public class OneLineString {
 	ArrayList<Position> original = new ArrayList();
 	ArrayList<Position> divided = new ArrayList();
@@ -9,6 +11,8 @@ public class OneLineString {
 	
 	class Position {
 		double x, y;
+		Date date;
+		int hour;
 	}
 	
 	
@@ -21,10 +25,21 @@ public class OneLineString {
 		return clusterId;
 	}
 	
-	public void addOneOriginalPosition(double x, double y) {
+	public void addOneOriginalPosition(double x, double y, long time) {
 		Position p = new Position();
 		p.x = x;
 		p.y = y;
+		Date date = new Date();
+		date.setTime(time);
+		p.date = date;
+		StringTokenizer token = new StringTokenizer(date.toString());
+		token.nextToken();
+		token.nextToken();
+		token.nextToken();
+		StringTokenizer token2 = new StringTokenizer(token.nextToken(), ":");
+		p.hour = Integer.parseInt(token2.nextToken());
+		//System.out.println(p.hour);
+		
 		original.add(p);
 	}
 	
@@ -40,6 +55,16 @@ public class OneLineString {
 	public double getOriginalY(int id) {
 		Position p = (Position)original.get(id);
 		return p.y;
+	}
+	
+	public Date getOriginalDate(int id) {
+		Position p = (Position)original.get(id);
+		return p.date;
+	}
+	
+	public int getOriginalHour(int id) {
+		Position p = (Position)original.get(id);
+		return p.hour;
 	}
 	
 	public int getNumDividedPosition() {

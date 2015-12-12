@@ -63,7 +63,7 @@ public class JsonFileReader {
 					JSONObject obj3 = (JSONObject)array3.get(k);
 					Double x = (Double)obj3.get("x");
 					Double y = (Double)obj3.get("y");
-					ols.addOneOriginalPosition(x.doubleValue(), y.doubleValue());
+					ols.addOneOriginalPosition(x.doubleValue(), y.doubleValue(), (long)0);
 				}
 			}
 					

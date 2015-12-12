@@ -31,6 +31,9 @@ public class GridDrawer {
 		Grid grid = ds.grid;
 	
 		
+		 gl2.glEnable(GL2.GL_BLEND);
+         gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+         
 		// for each rectangle
 		int cid = 0;
 		for(int i = 0; i < grid.NUMGY; i++) {
@@ -43,13 +46,12 @@ public class GridDrawer {
 				Color color = null;
 				if(displayMode == Canvas.DISPLAY_POPULATION)
 					color = grid.getGridColorWithPopulation(cid);
-				if(displayMode == Canvas.DISPLAY_STOPNESS)
-					color = grid.getGridColorWithStopness(cid);
+				if(color == Color.BLACK) continue;
 
 				double rr = intensityRatio * (double)color.getRed() / 255.0;
 				double gg = intensityRatio * (double)color.getGreen() / 255.0;
 				double bb = intensityRatio * (double)color.getBlue() / 255.0;
-				gl2.glColor3d(rr, gg, bb);
+				gl2.glColor4d(rr, gg, bb, 0.75);
 				gl2.glBegin(GL2.GL_POLYGON);
 				gl2.glVertex3d(gx0, gy0, 0.0);
 				gl2.glVertex3d(gx0, gy1, 0.0);
@@ -59,6 +61,7 @@ public class GridDrawer {
 			}
 		}	
 
+		gl2.glDisable(GL2.GL_BLEND);
 	}
 
 

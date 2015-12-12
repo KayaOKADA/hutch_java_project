@@ -7,7 +7,9 @@ import com.sun.beans.editors.IntegerEditor;
 import com.sun.scenario.effect.impl.prism.ps.PPSBlend_ADDPeer;
 
 public class ClusteringInvoker {
-
+	public static int KMEANS_CLUSTERING = 1;
+	public static int SPECTRAL_CLUSTERING = 2;
+	
 	String pythonpath = "C:/tools/Anaconda3/python.exe";
 	String pycodedir = "C:/itot/projects/InfoVis/Hutch/Hutch/Python/";
 	
@@ -17,7 +19,10 @@ public class ClusteringInvoker {
 	/**
 	 * Invoke a clustering process
 	 */
-	public void clustering(DataSet ds, int numc, double alpha) {
+	public void clustering(DataSet ds, int numc, double alpha, int method) {
+		String pyname = "clusterng.Kmeans.py ";
+		if(method == SPECTRAL_CLUSTERING)
+			pyname = "clustering.Spectral.py ";
 		
 		// Setup a matrix and write to a temporary file
 		preprocess(ds, numc, alpha);
@@ -30,7 +35,7 @@ public class ClusteringInvoker {
 			);
 			Process p = pb.start();
 			*/
-			String command = pythonpath + " " + pycodedir + "clustering.py " + pycodedir;
+			String command = pythonpath + " " + pycodedir + pyname + pycodedir;
 			System.out.println(command);
 			Runtime runtime = Runtime.getRuntime();
 			Process p = runtime.exec(command);
