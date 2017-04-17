@@ -49,7 +49,7 @@ public class CsvFileReader {
 				}
 				
 				// Set position to the string
-				ols.addOneOriginalPosition(x, y, Long.parseLong(time));
+				ols.addOneOriginalPosition(x, y, Long.parseLong(time),"","");
 				ppid = pid;
 			}
 		} catch(Exception e) {

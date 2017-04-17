@@ -10,8 +10,10 @@ public class ClusteringInvoker {
 	public static int KMEANS_CLUSTERING = 1;
 	public static int SPECTRAL_CLUSTERING = 2;
 	
-	String pythonpath = "C:/tools/Anaconda3/python.exe";
-	String pycodedir = "C:/itot/projects/InfoVis/Hutch/Hutch/Python/";
+    String pythonpath = "/Users/okadakaya/anaconda/python.app";
+    //String pythonpath = "C:/tools/Anaconda3/python.exe";
+    String pycodedir = "/Users/okadakaya/Documents/Hutch/Python/";
+    //String pycodedir = "C:/itot/projects/InfoVis/Hutch/Hutch/Python/";
 	
 	double data[][];
 	
@@ -94,7 +96,8 @@ public class ClusteringInvoker {
 		try {
 			
 			// Open the file
-			File file = new File(pycodedir + "clusteringInput.csv");
+			//File file = new File(pycodedir + "clusteringInput.csv");
+    File file = new File("/Users/okadakaya/Downloads/Hutch/Python/" + "clusteringInput.csv");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			
 			// Write the number of clusters
@@ -131,7 +134,8 @@ public class ClusteringInvoker {
 		try {
 			
 			// Open the file
-			File file = new File(pycodedir + "clusteringOutput.csv");
+		    //	File file = new File(pycodedir + "clusteringOutput.csv");
+    File file = new File("/Users/okadakaya/Downloads/Hutch/Python/" + "clusteringOutput.csv");
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			reader.ready();
 			

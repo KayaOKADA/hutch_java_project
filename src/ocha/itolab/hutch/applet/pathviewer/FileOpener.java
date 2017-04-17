@@ -17,7 +17,7 @@ public class FileOpener {
 
 	
 	/**
-	 * Container ‚ğƒZƒbƒg‚·‚é
+	 * Container ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 * @param c Component
 	 */
 	public void setContainer(Component c) {
@@ -26,7 +26,7 @@ public class FileOpener {
 	
 	
 	/**
-	 * Canvas ‚ğƒZƒbƒg‚·‚é
+	 * Canvas ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 * @param c Canvas
 	 */
 	public void setCanvas(Canvas c) {
@@ -41,8 +41,8 @@ public class FileOpener {
 	
 	
 	/**
-	 * ƒtƒ@ƒCƒ‹ƒ_ƒCƒAƒƒO‚ÉƒCƒxƒ“ƒg‚ª‚ ‚Á‚½‚Æ‚«‚ÉA‘Î‰‚·‚éƒtƒ@ƒCƒ‹‚ğ“Á’è‚·‚é
-	 * @return ƒtƒ@ƒCƒ‹
+	 * ãƒ•ã‚¡ã‚¤ãƒ«ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã«ã‚¤ãƒ™ãƒ³ãƒˆãŒã‚ã£ãŸã¨ãã«ã€å¯¾å¿œã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç‰¹å®šã™ã‚‹
+	 * @return ãƒ•ã‚¡ã‚¤ãƒ«
 	 */
 	public DataSet getDataSet() {
 		JFileChooser fileChooser = new JFileChooser(currentDirectory);
@@ -57,6 +57,9 @@ public class FileOpener {
 			if(filepath.endsWith("csv"))
 				ds = CsvFileReader.generateDataSet(filepath);
 			canvas.setCurrentDirectory(currentDirectory.getAbsolutePath());
+			String blockpath = currentDirectory.getAbsolutePath() + "/blocks.txt";
+			ds.block = BlockFileReader.readBlockFile(ds, blockpath);
+			StringFileWriter.write(ds, currentDirectory.getAbsolutePath());
 			return ds;
 		} else if (selected == JFileChooser.CANCEL_OPTION) { // cancel selected
 			return null;

@@ -6,7 +6,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
-import javax.media.opengl.awt.GLCanvas;
+import com.jogamp.opengl.awt.GLCanvas;
+//import javax.media.opengl.awt.GLCanvas;
 
 
 public class CursorListener implements MouseListener, MouseMotionListener, MouseWheelListener {
@@ -20,7 +21,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 	long wheelCount = 0;
 	
 	/**
-	 * Canvas‚ðƒZƒbƒg‚·‚é
+	 * Canvasã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 * @param c Canvas
 	 */
 	public void setCanvas(Object c, Object glc) {
@@ -31,7 +32,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 	}
 
 	/**
-	 * ViewingPanel‚ðƒZƒbƒg‚·‚é
+	 * ViewingPanelã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 * @param v ViewingPanel
 	 */
 	public void setViewingPanel(ViewingPanel v) {
@@ -39,7 +40,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 	}
 	
 	/**
-	 * FileOpener ‚ðƒZƒbƒg‚·‚é
+	 * FileOpener ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void setFileOpener(FileOpener fo) {
 		fileOpener = fo;
@@ -53,7 +54,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 	}
 
 	/**
-	 * ƒ}ƒEƒX‚ÌƒNƒŠƒbƒN‚ðŒŸo‚·‚éƒŠƒXƒi[
+	 * ãƒžã‚¦ã‚¹ã®ã‚¯ãƒªãƒƒã‚¯ã‚’æ¤œå‡ºã™ã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	public void mouseClicked(MouseEvent e) {
 		
@@ -68,7 +69,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚±‚Æ‚ðŒŸo‚·‚éƒŠƒXƒi[
+	 * ãƒžã‚¦ã‚¹ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã“ã¨ã‚’æ¤œå‡ºã™ã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	public void mousePressed(MouseEvent e) {
 		
@@ -82,7 +83,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒ{ƒ^ƒ“‚ª—£‚³‚ê‚½‚±‚Æ‚ðŒŸo‚·‚éƒŠƒXƒi[
+	 * ãƒžã‚¦ã‚¹ãƒœã‚¿ãƒ³ãŒé›¢ã•ã‚ŒãŸã“ã¨ã‚’æ¤œå‡ºã™ã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	public void mouseReleased(MouseEvent e) {
 		
@@ -94,7 +95,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ª“®‚¢‚½‚±‚Æ‚ðŒŸo‚·‚éƒŠƒXƒi[
+	 * ãƒžã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ãŒå‹•ã„ãŸã“ã¨ã‚’æ¤œå‡ºã™ã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	public void mouseMoved(MouseEvent e) {
 		
@@ -111,7 +112,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ðƒhƒ‰ƒbƒO‚µ‚½‚±‚Æ‚ðŒŸo‚·‚éƒŠƒXƒi[
+	 * ãƒžã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã‚’ãƒ‰ãƒ©ãƒƒã‚°ã—ãŸã“ã¨ã‚’æ¤œå‡ºã™ã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	public void mouseDragged(MouseEvent e) {
 
@@ -121,7 +122,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 		int cX = e.getX();
 		int cY = e.getY();
 		
-		// ‰Eƒ{ƒ^ƒ“‚Ìˆ—
+		// å³ãƒœã‚¿ãƒ³ã®å‡¦ç†
 		int m = e.getModifiers();
 		if((m & MouseEvent.BUTTON3_MASK) != 0) {
 			int dragMode = canvas.getDragMode();
@@ -138,7 +139,7 @@ public class CursorListener implements MouseListener, MouseMotionListener, Mouse
 
 	
 	/**
-	 * ƒ}ƒEƒXƒzƒC[ƒ‹‚Ì“®‚«‚ðŒŸo‚·‚éƒŠƒXƒi[
+	 * ãƒžã‚¦ã‚¹ãƒ›ã‚¤ãƒ¼ãƒ«ã®å‹•ãã‚’æ¤œå‡ºã™ã‚‹ãƒªã‚¹ãƒŠãƒ¼
 	 */
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if(canvas == null) return;

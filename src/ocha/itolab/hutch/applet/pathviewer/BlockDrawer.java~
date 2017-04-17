@@ -1,0 +1,47 @@
+
+package ocha.itolab.hutch.applet.pathviewer;
+
+import javax.media.opengl.GL2;/import com.jogamp.opengl.GL2;
+import java.awt.Color;
+import ocha.itolab.hutch.core.data.*;
+
+public class BlockDrawer {
+    static double intensityRatio = 1.0;
+	
+    static void setIntensityRatio(double t) {
+	intensityRatio = t;
+    }
+	
+    static void drawBlock(GL2 gl2, DataSet ds, int displayMode) {
+	paintBlock(gl2, ds, displayMode);	
+    }
+	
+    static void paintBlock(GL2 gl2, DataSet ds, int displayMode) {
+	gl2.glColor3d(0.5, 0.5, 0.5);
+	BlockSet block = ds.block;
+
+	gl2.glEnable(GL2.GL_BLEND);
+	gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+         
+	// for each rectangle
+	int cid = 0;
+	for(int i = 0; i < block.getNumBlocks(); i++) {
+	    double[][] bpos = block.getOneBlock(i);
+				
+	    Color color = block.getBlockColorWithPopulation(i);
+	    if(color == Color.BLACK) continue;
+
+	    double rr = intensityRatio * (double)color.getRed() / 255.0;
+	    double gg = intensityRatio * (double)color.getGreen() / 255.0;
+	    double bb = intensityRatio * (double)color.getBlue() / 255.0;
+	    gl2.glColor4d(rr, gg, bb, 0.75);
+	    gl2.glBegin(GL2.GL_POLYGON);
+	    gl2.glVertex3d(bpos[0][0], bpos[0][1], 0.0);
+	    gl2.glVertex3d(bpos[1][0], bpos[1][1], 0.0);
+	    gl2.glVertex3d(bpos[2][0], bpos[2][1], 0.0);
+	    gl2.glVertex3d(bpos[3][0], bpos[3][1], 0.0);
+	    gl2.glEnd();
+	}	
+	gl2.glDisable(GL2.GL_BLEND);
+    }
+}

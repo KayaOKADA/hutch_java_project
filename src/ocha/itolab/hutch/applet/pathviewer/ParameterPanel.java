@@ -16,7 +16,7 @@ public class ParameterPanel extends JPanel {
 	public JButton clusteringButton, aggregateButton;	
 	public JRadioButton kmeansButton, spectralButton;
 	public JSlider clusteringRatioSlider, imageShiftXSlider, imageShiftYSlider, imageScaleSlider; 
-	public JTextField numClusterField, numDivideField, alphaField, resolutionField;
+	public JTextField numClusterField, numDivideField, alphaField;
 	
 	int method = ClusteringInvoker.KMEANS_CLUSTERING;
 	
@@ -72,13 +72,6 @@ public class ParameterPanel extends JPanel {
 		clusteringButton = new JButton("Clustering");
 		p1.add(clusteringButton);
 
-		JPanel prs = new JPanel();
-		prs.setLayout(new GridLayout(1,2));
-		resolutionField = new JTextField("100");
-		prs.add(new JLabel("Num. grid"));
-		prs.add(resolutionField);
-		p1.add(prs);
-		
 		aggregateButton = new JButton("Aggregate again");
 		p1.add(aggregateButton);
 
@@ -130,7 +123,7 @@ public class ParameterPanel extends JPanel {
 	
 	
 	/**
-	 * ƒ‰ƒWƒIƒ{ƒ^ƒ“‚ÌƒAƒNƒVƒ‡ƒ“‚ÌŒŸo‚ğİ’è‚·‚é
+	 * ãƒ©ã‚¸ã‚ªãƒœã‚¿ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®æ¤œå‡ºã‚’è¨­å®šã™ã‚‹
 	 * @param actionListener ActionListener
 	 */
 	public void addRadioButtonListener(ActionListener actionListener) {
@@ -140,7 +133,7 @@ public class ParameterPanel extends JPanel {
 	
 	
 	/**
-	 * ƒ{ƒ^ƒ“‚ÌƒAƒNƒVƒ‡ƒ“‚ÌŒŸo‚ğİ’è‚·‚é
+	 * ãƒœã‚¿ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®æ¤œå‡ºã‚’è¨­å®šã™ã‚‹
 	 * @param actionListener ActionListener
 	 */
 	public void addButtonListener(ActionListener actionListener) {
@@ -157,7 +150,7 @@ public class ParameterPanel extends JPanel {
 
 	
 	/**
-	 * ƒ‰ƒWƒIƒ{ƒ^ƒ“‚ÌƒAƒNƒVƒ‡ƒ“‚ğŒŸ’m‚·‚éActionListener
+	 * ãƒ©ã‚¸ã‚ªãƒœã‚¿ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’æ¤œçŸ¥ã™ã‚‹ActionListener
 	 * @author itot
 	 */
 	class RadioButtonListener implements ActionListener {
@@ -176,7 +169,7 @@ public class ParameterPanel extends JPanel {
 	
 	
 	/**
-	 * ƒ{ƒ^ƒ“‚ÌƒAƒNƒVƒ‡ƒ“‚ğŒŸ’m‚·‚éActionListener
+	 * ãƒœã‚¿ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’æ¤œçŸ¥ã™ã‚‹ActionListener
 	 * @author itot
 	 */
 	class ButtonListener implements ActionListener {
@@ -193,10 +186,6 @@ public class ParameterPanel extends JPanel {
 					ci.clustering(ds, numc, alpha, method);
 				}
 				canvas.setNumCluster(numc);
-			}
-			if (buttonPushed == aggregateButton) {
-				int res = Integer.parseInt(resolutionField.getText());
-				ds.grid.setGridResolution(res);
 			}
 			
 			canvas.display();

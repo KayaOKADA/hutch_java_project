@@ -4,10 +4,10 @@ import java.io.*;
 import org.json.*;
 
 public class JsonFileReader {
-	static StringBuilder builder = new StringBuilder();
-	
-	static String loadFile(String filepath) {
-		  // try to find file
+    static StringBuilder builder = new StringBuilder();
+    
+    static String loadFile(String filepath) {
+        // try to find file
         FileReader file_reader = null;
         BufferedReader buf_reader = null;
         StringWriter str_writer = null;
@@ -33,46 +33,51 @@ public class JsonFileReader {
             return null;
         }
         return json_txt;
-	}
-
-
-
-	public static DataSet generateDataSet(String filepath) {
-		String json_txt = loadFile(filepath);
-		DataSet ds = new DataSet();
-		
-		if(json_txt == null) {
-			System.err.println("Exit with Error");
-			System.exit(1);
-	    }
-
-		// generate data set
-		try {
-	
-			JSONObject obj1 = new JSONObject(json_txt);
-			JSONArray array2 = (JSONArray)obj1.get("linestrings");
-
-			// for each linestring
-			for(int j = 0; j < array2.length(); j++) {
-				JSONObject obj2 = (JSONObject)array2.get(j);
-				JSONArray array3 = (JSONArray)obj2.get("linestring");
-				OneLineString ols = ds.addOneLineString();
-				
-				// for each position
-				for(int k = 0; k < array3.length(); k++) {
-					JSONObject obj3 = (JSONObject)array3.get(k);
-					Double x = (Double)obj3.get("x");
-					Double y = (Double)obj3.get("y");
-					ols.addOneOriginalPosition(x.doubleValue(), y.doubleValue(), (long)0);
-				}
-			}
-					
-	    } catch(JSONException e) {
-	    	e.printStackTrace();
-	    }
-		
-		ds.postprocess();
-		return ds;
-	}
-	
+    }
+    
+    
+    
+    public static DataSet generateDataSet(String filepath) {
+        String json_txt = loadFile(filepath);
+        DataSet ds = new DataSet();
+        
+        if(json_txt == null) {
+            System.err.println("Exit with Error");
+            System.exit(1);
+        }
+        
+        // generate data set
+        try {
+            
+            JSONObject obj1 = new JSONObject(json_txt);
+            JSONArray array2 = (JSONArray)obj1.get("data");
+            OneLineString ols = null;
+            
+            // for each linestring
+            for(int j = 0; j < array2.length(); j++) {
+                JSONObject obj2 = (JSONObject)array2.get(j);
+                long time = obj2.getLong("timestamp");
+                JSONArray array3 = (JSONArray)obj2.get("people");
+                
+                // for each position
+                for(int k = 0; k < array3.length(); k++) {
+                	ols = ds.addOneLineString();
+                    JSONObject obj3 = (JSONObject)array3.get(k);
+                    String gender = obj3.getString("gender");
+                    String age = obj3.getString("age");
+                    JSONObject obj4 = (JSONObject)obj3.get("position");
+                    Double x = obj4.getDouble("x");
+                    Double y = obj4.getDouble("y");
+                    ols.addOneOriginalPosition(x.doubleValue(), -1.0 * y.doubleValue(), time, gender, age);
+                }
+            }
+            
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+        
+        ds.postprocess();
+        return ds;
+    }
+    
 }

@@ -7,7 +7,7 @@ import javax.swing.*;
 
 
 /**
- * Applet “à•”‚É—§‚¿ã‚°‚é Window ‚ÉŠÖ‚·‚éƒNƒ‰ƒX
+ * Applet å†…éƒ¨ã«ç«‹ã¡ä¸Šã’ã‚‹ Window ã«é–¢ã™ã‚‹ã‚¯ãƒ©ã‚¹
  * @author itot
  */
 public class Window extends JFrame {
@@ -38,7 +38,7 @@ public class Window extends JFrame {
 	 */
 	public Window(String name, boolean isTerminatable) {
 		//		this(name, 640, 480, Color.lightGray); // VGA: 640x480
-		this(name, isTerminatable, 800, 600, Color.lightGray); // SVGA: 800x600
+		this(name, isTerminatable, 800, 600, Color.white); // SVGA: 800x600
 	}
 
 	/**
@@ -58,11 +58,11 @@ public class Window extends JFrame {
 	 */
 	public Window(String name) {
 		//		this(name, true, 640, 480, Color.lightGray); // VGA: 640x480
-		this(name, true, 800, 600, Color.lightGray); // SVGA: 800x600
+		this(name, true, 800, 600, Color.white); // SVGA: 800x600
 	}
 
 	/**
-	 * ƒEƒBƒ“ƒhƒE‚ÌƒCƒxƒ“ƒg‚ğŒŸ’m‚·‚é WindowAdapter
+	 * ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’æ¤œçŸ¥ã™ã‚‹ WindowAdapter
 	 * @author itot
 	 */
 	private class WindowEventListener extends WindowAdapter {
@@ -79,7 +79,7 @@ public class Window extends JFrame {
 		}
 
 		/**
-		 * Window‚ğ•Â‚¶‚é
+		 * Windowã‚’é–‰ã˜ã‚‹
 		 */
 		public void windowClosing(WindowEvent e) {
 			setVisible(false);
@@ -90,7 +90,7 @@ public class Window extends JFrame {
 		}
 
 		/**
-		 * I—¹‰Â”\‚ğ•\‚·ƒpƒ‰ƒ[ƒ^‚ğƒZƒbƒg‚·‚é
+		 * çµ‚äº†å¯èƒ½ã‚’è¡¨ã™ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 		 * @param isTerminatable
 		 */
 		public void setTermination(boolean isTerminatable) {

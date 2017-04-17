@@ -5,7 +5,7 @@ import java.util.*;
 public class DataSet {
 	ArrayList<OneLineString> linestrings = new ArrayList();
 	double minmax[] = new double[4];
-	public Grid grid;
+	public BlockSet block;
 	
 	public OneLineString addOneLineString() {
 		OneLineString ols = new OneLineString();
@@ -55,9 +55,7 @@ public class DataSet {
 			}
 		}
 
-		//System.out.println("   minmax x " + minmax[0] + "," + minmax[1] + " y " + minmax[2] + "," + minmax[3]);
+		System.out.println("   minmax x " + minmax[0] + "," + minmax[1] + " y " + minmax[2] + "," + minmax[3]);
 		
-		grid = new Grid(this);
-		grid.aggregate();
 	}
 }

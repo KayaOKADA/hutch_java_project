@@ -3,7 +3,8 @@ package ocha.itolab.hutch.applet.pathviewer;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import javax.media.opengl.GL2;
+/*import javax.media.opengl.GL2;*/
+import com.jogamp.opengl.GL2;
 import ocha.itolab.hutch.core.data.*;
 
 public class PathDrawer {
@@ -15,7 +16,7 @@ public class PathDrawer {
 	
 	
 	/**
-	 * ãOê’Çï\é¶Ç∑ÇÈ
+	 * ËªåË∑°„ÇíË°®Á§∫„Åô„Çã
 	 */
 	static void drawPath(GL2 gl2, DataSet ds, int numCluster) {
 		gl2.glColor3d(0.5, 0.5, 0.5);
@@ -23,6 +24,7 @@ public class PathDrawer {
 		// for each linestring
 		for(int i = 0; i < ds.getNumLineString(); i++) {
 			OneLineString ols = ds.getOneLineString(i);	
+			if(ols.getDisplayFlag() == false) continue;
 			drawOneLineString(gl2, ols, numCluster, 0.0);
 		}
 	
@@ -31,15 +33,16 @@ public class PathDrawer {
 	
 	
 	/**
-	 * ã«èäÇí âﬂÇ∑ÇÈãOê’Çï\é¶Ç∑ÇÈ
+	 * Â±ÄÊâÄ„ÇíÈÄöÈÅé„Åô„ÇãËªåË∑°„ÇíË°®Á§∫„Åô„Çã
 	 */
-	static void drawPathLocal(GL2 gl2, DataSet ds, int numCluster, int pickX, int pickY) {
+	static void drawPathLocal(GL2 gl2, DataSet ds, int numCluster, int pickedBlockID) {
 		gl2.glColor3d(0.5, 0.5, 0.5);
-		ArrayList localsegs = ds.grid.getLocalSegments(pickX, pickY);
+		ArrayList localsegs = ds.block.getLocalSegments(pickedBlockID);
 		
 		// for each linestring
 		for(int i = 0; i < localsegs.size(); i++) {
 			PathSegment ps = (PathSegment)localsegs.get(i);
+			if(ps.ols.getDisplayFlag() == false) continue;
 			drawOneLineString(gl2, ps.ols, numCluster, 0.1);
 		}
 	
@@ -47,7 +50,7 @@ public class PathDrawer {
 
 	
 	/**
-	 * 1ñ{ÇÃãOê’Çï\é¶Ç∑ÇÈ
+	 * 1Êú¨„ÅÆËªåË∑°„ÇíË°®Á§∫„Åô„Çã
 	 */
 	static void drawOneLineString(GL2 gl2, OneLineString ols, int numCluster, double z) {
 		
@@ -66,6 +69,8 @@ public class PathDrawer {
 			double x = ols.getOriginalX(j);
 			double y = ols.getOriginalY(j);
 			//System.out.println( "    " + i + "," + j + "," + x + "," + y);
+			x += (Math.random() - 0.5) * 0.1;
+			y += (Math.random() - 0.5) * 0.1;
 			gl2.glVertex3d(x, y, z);
 		}
 		gl2.glEnd();

@@ -1,7 +1,10 @@
 package ocha.itolab.hutch.applet.pathviewer;
 
 import java.awt.*;
-import javax.media.opengl.awt.GLCanvas;
+import java.util.*;
+//import javax.media.opengl.awt.GLCanvas;
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.GLCanvas;
 import javax.swing.*;
 
 
@@ -18,7 +21,7 @@ public class ViewerMain extends JApplet {
 	public static double INTERVAL_CONST = 30.0;
 	
 	/**
-	 * applet ‚ğ‰Šú‰»‚µAŠeíƒf[ƒ^\‘¢‚ğ‰Šú‰»‚·‚é
+	 * applet ã‚’åˆæœŸåŒ–ã—ã€å„ç¨®ãƒ‡ãƒ¼ã‚¿æ§‹é€ ã‚’åˆæœŸåŒ–ã™ã‚‹
 	 */
 	public void init() {
 		setSize(new Dimension(1000,800));
@@ -26,24 +29,26 @@ public class ViewerMain extends JApplet {
 	}
 
 	/**
-	 * applet ‚ÌŠeƒCƒxƒ“ƒg‚Ìó•t‚ğƒXƒ^[ƒg‚·‚é
+	 * applet ã®å„ã‚¤ãƒ™ãƒ³ãƒˆã®å—ä»˜ã‚’ã‚¹ã‚¿ãƒ¼ãƒˆã™ã‚‹
 	 */
 	public void start() {
 	}
 
 	/**
-	 * applet ‚ÌŠeƒCƒxƒ“ƒg‚Ìó•t‚ğƒXƒgƒbƒv‚·‚é
+	 * applet ã®å„ã‚¤ãƒ™ãƒ³ãƒˆã®å—ä»˜ã‚’ã‚¹ãƒˆãƒƒãƒ—ã™ã‚‹
 	 */
 	public void stop() {
 	}
 
 	/**
-	 * applet“™‚ğ‰Šú‰»‚·‚é
+	 * appletç­‰ã‚’åˆæœŸåŒ–ã™ã‚‹
 	 */
 	private void buildGUI() {
 
 		// Canvas
-		canvas = new Canvas(512, 512);
+		Color foregroundColor = Color.white;
+		Color backgroundColor = Color.white;
+		canvas = new Canvas(512, 512, foregroundColor, backgroundColor);
 		canvas.requestFocus();
 		GLCanvas glc = canvas.getGLCanvas();
 		
@@ -67,13 +72,13 @@ public class ViewerMain extends JApplet {
 		cl.setViewingPanel(viewingPanel);
 		canvas.addCursorListener(cl);
 		
-		// Canvas‚ÆViewingPanel‚ÌƒŒƒCƒAƒEƒg
+		// Canvasã¨ViewingPanelã®ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(glc, BorderLayout.CENTER);
 		mainPanel.add(viewingPanel, BorderLayout.WEST);
 
-		// ƒEƒBƒ“ƒhƒEã‚ÌƒŒƒCƒAƒEƒg
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä¸Šã®ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 		windowContainer = this.getContentPane();
 		windowContainer.setLayout(new BorderLayout());
 		windowContainer.add(mainPanel, BorderLayout.CENTER);
@@ -82,11 +87,11 @@ public class ViewerMain extends JApplet {
 	}
 
 	/**
-	 * mainŠÖ”
-	 * @param args Às‚Ìˆø”
+	 * mainé–¢æ•°
+	 * @param args å®Ÿè¡Œæ™‚ã®å¼•æ•°
 	 */
 	public static void main(String[] args) {
-		Window window = new Window("HumanTrackViewer", true, 800, 600, Color.lightGray);
+		Window window = new Window("Hutch", true, 800, 600, Color.white);
 		ViewerMain v = new ViewerMain();
 
 		v.init();

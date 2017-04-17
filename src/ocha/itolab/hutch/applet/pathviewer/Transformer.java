@@ -1,12 +1,13 @@
 package ocha.itolab.hutch.applet.pathviewer;
 
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL2;
+/*import javax.media.opengl.GL2;*/
 
 import ocha.itolab.hutch.core.data.*;
 
 
 /**
- * •`‰æ‚Ì‹“_‘€ìiŠg‘åk¬A‰ñ“]A•½sˆÚ“®j‚Ìƒpƒ‰ƒ[ƒ^‚ğŠÇ—‚·‚éƒNƒ‰ƒX
+ * æç”»ã®è¦–ç‚¹æ“ä½œï¼ˆæ‹¡å¤§ç¸®å°ã€å›è»¢ã€å¹³è¡Œç§»å‹•ï¼‰ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹
  * @author itot
  */
 public class Transformer {
@@ -15,7 +16,7 @@ public class Transformer {
 	double viewScale;
 	double viewShiftBak[] = new double[3];
 	double viewScaleBak;
-	double Xrotate, Yrotate, XrotateBak, YrotateBak;
+	static double Xrotate, Yrotate, XrotateBak, YrotateBak;
 
 	double min[] = new double[3];
 	double max[] = new double[3];
@@ -33,7 +34,7 @@ public class Transformer {
 	}
 
 	/**
-	 * ‹“_ƒpƒ‰ƒ[ƒ^‚ğƒŠƒZƒbƒg‚·‚é
+	 * è¦–ç‚¹ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void viewReset() {
 		for (int i = 0; i < 16; i++) {
@@ -55,7 +56,7 @@ public class Transformer {
 	
 	
 	/**
-	 * ƒ}ƒEƒXƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½ƒ‚[ƒh‚ğİ’è‚·‚é
+	 * ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸãƒ¢ãƒ¼ãƒ‰ã‚’è¨­å®šã™ã‚‹
 	 */
 	public void mousePressed() {
 		viewScaleBak = viewScale;
@@ -67,12 +68,12 @@ public class Transformer {
 	}
 
 	/**
-	 * ƒ}ƒEƒX‚Ìƒhƒ‰ƒbƒO‘€ì‚É‰‚¶‚Äƒpƒ‰ƒ[ƒ^‚ğ§Œä‚·‚é
-	 * @param x ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚ÌxÀ•W’l
-	 * @param y ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚ÌyÀ•W’l
-	 * @param width ‰æ–Ê—Ìˆæ‚Ì•
-	 * @param height ‰æ–Ê—Ìˆæ‚Ì‚‚³
-	 * @param dragMode ƒhƒ‰ƒbƒOƒ‚[ƒhi1:ZOOM, 2:SHIFT, 3:ROTATEj
+	 * ãƒã‚¦ã‚¹ã®ãƒ‰ãƒ©ãƒƒã‚°æ“ä½œã«å¿œã˜ã¦ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’åˆ¶å¾¡ã™ã‚‹
+	 * @param x ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ã®xåº§æ¨™å€¤
+	 * @param y ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ã®yåº§æ¨™å€¤
+	 * @param width ç”»é¢é ˜åŸŸã®å¹…
+	 * @param height ç”»é¢é ˜åŸŸã®é«˜ã•
+	 * @param dragMode ãƒ‰ãƒ©ãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰ï¼ˆ1:ZOOM, 2:SHIFT, 3:ROTATEï¼‰
 	 */
 	public void drag(int x, int y, int width, int height, int dragMode, Drawer d) {
 		
@@ -118,7 +119,7 @@ public class Transformer {
 	
 	
 	/**
-	 * ‹“_ƒpƒ‰ƒ[ƒ^‚ğ‰Šú‰»‚·‚é
+	 * è¦–ç‚¹ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’åˆæœŸåŒ–ã™ã‚‹
 	 */
 	public void setDefaultValue() {
 
@@ -147,7 +148,7 @@ public class Transformer {
 
 
 	/**
-	 * DataSet‚ğƒZƒbƒg‚·‚é
+	 * DataSetã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void setDataSet(DataSet ds) {
 
@@ -169,8 +170,8 @@ public class Transformer {
 	
 	
 	/**
-	 * •\¦‚ÌŠg‘å“x‚ğ•Ô‚·
-	 * @return •\¦‚ÌŠg‘å“x
+	 * è¡¨ç¤ºã®æ‹¡å¤§åº¦ã‚’è¿”ã™
+	 * @return è¡¨ç¤ºã®æ‹¡å¤§åº¦
 	 */
 	public double getViewScale() {
 		return viewScale;
@@ -178,8 +179,8 @@ public class Transformer {
 	
 	
 	/**
-	 * •\¦‚ÌŠg‘å“x‚ğƒZƒbƒg‚·‚é
-	 * @param v •\¦‚ÌŠg‘å“x
+	 * è¡¨ç¤ºã®æ‹¡å¤§åº¦ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+	 * @param v è¡¨ç¤ºã®æ‹¡å¤§åº¦
 	 */
 	public void setViewScale(double v) {
 		viewScale = v;
@@ -187,16 +188,16 @@ public class Transformer {
 	
 
 	/**
-	 * •\¦‚Ì‰ñ“]Šp“x‚ğ•Ô‚·
-	 * @return •\¦‚Ì‰ñ“]Šp“x
+	 * è¡¨ç¤ºã®å›è»¢è§’åº¦ã‚’è¿”ã™
+	 * @return è¡¨ç¤ºã®å›è»¢è§’åº¦
 	 */
-	public double getViewRotateX() {
+	public static double getViewRotateX() {
 		return Xrotate;
 	}
 	
 	/**
-	 * •\¦‚Ì‰ñ“]Šp“x‚ğ•Ô‚·
-	 * @return •\¦‚Ì‰ñ“]Šp“x
+	 * è¡¨ç¤ºã®å›è»¢è§’åº¦ã‚’è¿”ã™
+	 * @return è¡¨ç¤ºã®å›è»¢è§’åº¦
 	 */
 	public double getViewRotateY() {
 		return Yrotate;
@@ -204,70 +205,70 @@ public class Transformer {
 	
 	
 	/**
-	 * Tree‚ÌƒTƒCƒY’l‚ğ•Ô‚·
-	 * @return Tree‚ÌƒTƒCƒY’l
+	 * Treeã®ã‚µã‚¤ã‚ºå€¤ã‚’è¿”ã™
+	 * @return Treeã®ã‚µã‚¤ã‚ºå€¤
 	 */
 	public double getSize() {
 		return size;
 	}
 	
 	/**
-	 * Tree‚ÌƒTƒCƒY’l‚ğƒZƒbƒg‚·‚é
-	 * @param t Tree‚ÌƒTƒCƒY’l
+	 * Treeã®ã‚µã‚¤ã‚ºå€¤ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+	 * @param t Treeã®ã‚µã‚¤ã‚ºå€¤
 	 */
 	public void setSize(double t) {
 		size = t;
 	}
 
 	/**
-	 * counter‚Ì’†SÀ•W’l‚ğ•Ô‚·
-	 * @param i À•W²(1:X, 2:Y, 3:Z)
-	 * @return ’†SÀ•W’l
+	 * counterã®ä¸­å¿ƒåº§æ¨™å€¤ã‚’è¿”ã™
+	 * @param i åº§æ¨™è»¸(1:X, 2:Y, 3:Z)
+	 * @return ä¸­å¿ƒåº§æ¨™å€¤
 	 */
 	public double getCenter(int i) {
 		return center[i];
 	}
 	
 	/**
-	 * counter‚Ì’†SÀ•W’l‚ğƒZƒbƒg‚·‚é
-	 * @param g ’†SÀ•W’l
-	 * @param i À•W²(1:X, 2:Y, 3:Z)
+	 * counterã®ä¸­å¿ƒåº§æ¨™å€¤ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+	 * @param g ä¸­å¿ƒåº§æ¨™å€¤
+	 * @param i åº§æ¨™è»¸(1:X, 2:Y, 3:Z)
 	 */
 	public void setCenter(double g, int i) {
 		center[i] = g;
 	}
 
 	/**
-	 * ‹“_‚Ì‰ñ“]‚Ìs—ñ’l‚ğ•Ô‚·
-	 * @param i s—ñ’†‚Ì—v‘f‚ÌˆÊ’u
-	 * @return s—ñ’l
+	 * è¦–ç‚¹ã®å›è»¢ã®è¡Œåˆ—å€¤ã‚’è¿”ã™
+	 * @param i è¡Œåˆ—ä¸­ã®è¦ç´ ã®ä½ç½®
+	 * @return è¡Œåˆ—å€¤
 	 */
 	public double getViewRotate(int i) {
 		return viewRotate[i];
 	}
 	
 	/**
-	 * ‹“_‚Ì‰ñ“]‚Ìs—ñ’l‚ğƒZƒbƒg‚·‚é
-	 * @param v s—ñ’l
-	 * @param i s—ñ’†‚Ì—v‘f‚ÌˆÊ’u
+	 * è¦–ç‚¹ã®å›è»¢ã®è¡Œåˆ—å€¤ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+	 * @param v è¡Œåˆ—å€¤
+	 * @param i è¡Œåˆ—ä¸­ã®è¦ç´ ã®ä½ç½®
 	 */
 	public void setViewRotate(double v, int i) {
 		viewRotate[i] = v;
 	}
 
 	/**
-	 * ‹“_‚Ì•½sˆÚ“®—Ê‚ğ•Ô‚·
-	 * @param i À•W² (0:X, 1:Y, 2:Z)
-	 * @return •½sˆÚ“®—Ê
+	 * è¦–ç‚¹ã®å¹³è¡Œç§»å‹•é‡ã‚’è¿”ã™
+	 * @param i åº§æ¨™è»¸ (0:X, 1:Y, 2:Z)
+	 * @return å¹³è¡Œç§»å‹•é‡
 	 */
 	public double getViewShift(int i) {
 		return viewShift[i];
 	}
 	
 	/**
-	 * ‹“_‚Ì•½sˆÚ“®—Ê‚ğƒZƒbƒg‚·‚é
-	 * @param v •½sˆÚ“®—Ê
-	 * @param i À•W² (1:X, 2:Y, 3:Z)
+	 * è¦–ç‚¹ã®å¹³è¡Œç§»å‹•é‡ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+	 * @param v å¹³è¡Œç§»å‹•é‡
+	 * @param i åº§æ¨™è»¸ (1:X, 2:Y, 3:Z)
 	 */
 	public void setViewShift(double v, int i) {
 		viewShift[i] = v;

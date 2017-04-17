@@ -12,17 +12,21 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import ocha.itolab.hutch.core.data.*;
 import ocha.itolab.hutch.core.tool.*;
-
+import javax.swing.border.LineBorder;
 
 public class ViewingPanel extends JPanel  {
 
-	public JButton  fileOpenButton, viewResetButton, aggregateButton, imageSaveButton;
-	public JRadioButton pathButton, populationButton, directionButton;
-	public JRadioButton allButton, stopButton, passButton, ratioButton;
+	public JButton  fileOpenButton, viewResetButton, aggregateButton, imageSaveButton, looktimeButton;
+	public JRadioButton pathButton, populationButton;
+	public JRadioButton maleButton, femaleButton, under15Button, b1550Button, over50Button, genderratioButton, allButton;
+	public JRadioButton increase_decreaseButton, statisticsButton;
 	public JTextField minHourField, maxHourField, imageFileField;
-	public JSlider intensityRatioSlider;
+	public JSlider intensityRatioSlider,transparencySlider, looktimeSlider;
+	public JSlider transparency_idSlider1, transparency_idSlider2;
+	public JLabel transparencyLabel;
 	public Container container;
 	JTabbedPane pane = null;
+	public static JPanel pck4 = new JPanel();
 
 	/* Selective canvas */
 	Canvas canvas;
@@ -49,11 +53,11 @@ public class ViewingPanel extends JPanel  {
 
 		
 		//
-		// ƒtƒ@ƒCƒ‹“ü—Í‚¨‚æ‚Ñ‹“_•ÏX‘€ì‚Ìƒpƒlƒ‹
-		// i‹N“®‚µ‚½‚Æ‚«‰E‚Éo‚éƒpƒlƒ‹‚Ìİ’èj
+		// ãƒ•ã‚¡ã‚¤ãƒ«å…¥åŠ›ãŠã‚ˆã³è¦–ç‚¹å¤‰æ›´æ“ä½œã®ãƒ‘ãƒãƒ«
+		// ï¼ˆèµ·å‹•ã—ãŸã¨ãå³ã«å‡ºã‚‹ãƒ‘ãƒãƒ«ã®è¨­å®šï¼‰
 		//
 		JPanel p1 = new JPanel();
-		p1.setLayout(new GridLayout(20,1));
+		p1.setLayout(new GridLayout(30,1));
 		
 		fileOpenButton = new JButton("JSON/CSV File Open");
 		p1.add(fileOpenButton);
@@ -61,29 +65,52 @@ public class ViewingPanel extends JPanel  {
 		viewResetButton = new JButton("View Reset");
 		p1.add(viewResetButton);
 		
+		looktimeButton = new JButton("invisible/visible");
+		p1.add(looktimeButton);
+		
 		JPanel pir = new JPanel();
 		pir.setLayout(new GridLayout(2,1));
-		pir.add(new JLabel("Intensity ratio"));
-		intensityRatioSlider = new JSlider(0, 100, 50);
-		pir.add(intensityRatioSlider);
+		JPanel pir2 = new JPanel();
+		pir2.setLayout(new GridLayout(2,1));
+		JPanel pir3 = new JPanel();
+		pir3.setLayout(new GridLayout(2,1));
+		JPanel pir4 = new JPanel();
+		pir4.setLayout(new GridLayout(1,1));
+		//pir.add(new JLabel("Intensity ratio"));
+		//intensityRatioSlider = new JSlider(0, 100, 50);
+		//pir.add(intensityRatioSlider);
+		pir.add(new JLabel("Transparency"));
+		transparencySlider = new JSlider(5, 40, 20);
+		//transparencySlider.setMajorTickSpacing(10);
+		//transparencySlider.setMajorTickSpacing(5);
+		pir.add(transparencySlider);
 		p1.add(pir);
+		pir3.add(new JLabel("Transparency å¢—æ¸›"));
+		transparency_idSlider1 = new JSlider(5, 250, 40);
+		pir3.add(transparency_idSlider1);
+		p1.add(pir3);
+		transparency_idSlider2 = new JSlider(100, 600, 300);
+		pir4.add(transparency_idSlider2);
+		p1.add(pir4);
+		pir2.add(new JLabel("Time"));
+		looktimeSlider = new JSlider(0, 24, 0);
+		pir2.add(looktimeSlider);
+		p1.add(pir2);
 		
+		/*
 		JPanel prb1 = new JPanel();
 		prb1.setLayout(new GridLayout(1,2));
 		JPanel prb2 = new JPanel();
 		prb2.setLayout(new GridLayout(1,2));
 		pathButton = new JRadioButton("Path");
 		populationButton = new JRadioButton("Population");
-		directionButton = new JRadioButton("Direction");
 		prb1.add(pathButton);
 		prb1.add(populationButton);
-		prb2.add(directionButton);
 		p1.add(prb1);
 		p1.add(prb2);
 		ButtonGroup group1 = new ButtonGroup();
 		group1.add(pathButton);
 		group1.add(populationButton);
-		group1.add(directionButton);
 		
 		JPanel pminh = new JPanel();
 		pminh.setLayout(new GridLayout(1,2));
@@ -98,31 +125,66 @@ public class ViewingPanel extends JPanel  {
 		pmaxh.add(new JLabel("Max. hour"));
 		pmaxh.add(maxHourField);
 		p1.add(pmaxh);
+		*/
 		
 		JPanel pck1 = new JPanel();
 		pck1.setLayout(new GridLayout(1,2));
 		JPanel pck2 = new JPanel();
-		pck2.setLayout(new GridLayout(1,2));
-		allButton = new JRadioButton("All");
-		stopButton = new JRadioButton("Stop");
-		passButton = new JRadioButton("Pass");
-		ratioButton = new JRadioButton("Ratio");
-		pck1.add(allButton);
-		pck1.add(stopButton);
-		pck2.add(passButton);
-		pck2.add(ratioButton);
+		pck2.setLayout(new GridLayout(1,3));
+		JPanel pck3 = new JPanel();
+		pck3.setLayout(new GridLayout(1,2));
+		//JPanel pck4 = new JPanel();
+		pck4.setLayout(new GridLayout(1,23));
+		pck4.setPreferredSize(new Dimension(1,2));
+		pck4.setBorder(new LineBorder(Color.LIGHT_GRAY, 2, true));
+		JPanel pck5 = new JPanel();
+		pck5.setLayout(new GridLayout(1,2));
+		increase_decreaseButton = new JRadioButton("å¢—æ¸›");
+		statisticsButton = new JRadioButton("ALL");
+		maleButton = new JRadioButton("Male");
+		femaleButton = new JRadioButton("Female");
+		under15Button = new JRadioButton("-15");
+		b1550Button = new JRadioButton("15-50");
+		over50Button = new JRadioButton("50-");
+		allButton = new JRadioButton("ALL(hour)");
+		genderratioButton = new JRadioButton("Gender ratio");
+		Color colormap[] = new Color[24];
+		for(int i=0;i<24;i++){
+			colormap[i] = Color.WHITE;
+		}
+		TimePanel.panelInit(pck4, colormap);
+		//Color color[] = BlockSet.setPanelcolormap();
+		
+		pck1.add(maleButton);
+		pck1.add(femaleButton);
+		pck2.add(under15Button);
+		pck2.add(b1550Button);
+		pck2.add(over50Button);
+		pck3.add(allButton);
+		pck3.add(genderratioButton);
+		pck5.add(increase_decreaseButton);
+		pck5.add(statisticsButton);
+		
+		p1.add(pck4);
+		p1.add(pck5);
 		p1.add(pck1);
-		p1.add(pck2);
+		//p1.add(pck2);
+		//p1.add(pck3);
 		ButtonGroup group2= new ButtonGroup();
+		group2.add(maleButton);
+		group2.add(femaleButton);
+		group2.add(under15Button);
+		group2.add(b1550Button);
+		group2.add(over50Button);
 		group2.add(allButton);
-		group2.add(stopButton);
-		group2.add(passButton);
-		group2.add(ratioButton);
+		group2.add(genderratioButton);
+		group2.add(statisticsButton);
+		group2.add(increase_decreaseButton);
 		
 		aggregateButton = new JButton("Aggregate again");
+		/*
 		p1.add(aggregateButton);
-		
-
+		 */
 		
 		JPanel pif = new JPanel();
 		pif.setLayout(new GridLayout(1,2));
@@ -135,21 +197,23 @@ public class ViewingPanel extends JPanel  {
 		p1.add(imageSaveButton);
 		
 		//
-		// ƒpƒlƒ‹ŒQ‚ÌƒŒƒCƒAƒEƒg
+		// ãƒ‘ãƒãƒ«ç¾¤ã®ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 		//
 		pane = new JTabbedPane();
 		pane.add(p1);
 		pane.setTabComponentAt(0, new JLabel("Main"));
 		this.add(pane);
 		
+		//ParameterPanel
+		/*
 		ppanel = new ParameterPanel();
 		pane.add(ppanel);
 		pane.setTabComponentAt(1, new JLabel("Parameters"));
-		pane.setMnemonicAt(1, KeyEvent.VK_0);
+		pane.setMnemonicAt(1, KeyEvent.VK_0);*/
 		
 		
 		//
-		// ƒŠƒXƒi[‚Ì’Ç‰Á
+		// ãƒªã‚¹ãƒŠãƒ¼ã®è¿½åŠ 
 		//
 		if (bl == null)
 			bl = new ButtonListener();
@@ -165,16 +229,16 @@ public class ViewingPanel extends JPanel  {
 	}
 	
 	/**
-	 * Canvas‚ğƒZƒbƒg‚·‚é
+	 * Canvasã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 * @param c Canvas
 	 */
 	public void setCanvas(Object c) {
 		canvas = (Canvas) c;
-		ppanel.setCanvas(canvas);
+		//ppanel.setCanvas(canvas);
 	}
 	
 	/**
-	 * FileOpener ‚ğƒZƒbƒg‚·‚é
+	 * FileOpener ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void setFileOpener(FileOpener fo) {
 		fileOpener = fo;
@@ -183,82 +247,127 @@ public class ViewingPanel extends JPanel  {
 	
 	
 	/**
-	 * Cursor Sensor ‚Ì ON/OFF ‚ğw’è‚·‚éƒtƒ‰ƒO‚ğ•Ô‚·
+	 * Cursor Sensor ã® ON/OFF ã‚’æŒ‡å®šã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’è¿”ã™
 	 * @return cursorSensorFlag
 	 */
 	public boolean getCursorSensorFlag() {
 		return cursorSensorFlag;
 	}
 	
+	public static void setTimepanel(Color[] colormap){
+		TimePanel.panelInit(pck4, colormap);
+	}
 	
 	/**
-	 * ƒ‰ƒWƒIƒ{ƒ^ƒ“‚ÌƒAƒNƒVƒ‡ƒ“‚ÌŒŸo‚ğİ’è‚·‚é
+	 * ãƒ©ã‚¸ã‚ªãƒœã‚¿ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®æ¤œå‡ºã‚’è¨­å®šã™ã‚‹
 	 * @param actionListener ActionListener
 	 */
 	public void addRadioButtonListener(ActionListener actionListener) {
-		pathButton.addActionListener(actionListener);
-		populationButton.addActionListener(actionListener);
-		directionButton.addActionListener(actionListener);
+		//pathButton.addActionListener(actionListener);
+		//populationButton.addActionListener(actionListener);
+		maleButton.addActionListener(actionListener);
+		femaleButton.addActionListener(actionListener);
+		under15Button.addActionListener(actionListener);
+		b1550Button.addActionListener(actionListener);
+		over50Button.addActionListener(actionListener);
 		allButton.addActionListener(actionListener);
-		stopButton.addActionListener(actionListener);
-		passButton.addActionListener(actionListener);
-		ratioButton.addActionListener(actionListener);
+		genderratioButton.addActionListener(actionListener);
+		increase_decreaseButton.addActionListener(actionListener);
+		statisticsButton.addActionListener(actionListener);
 	}
 
 	/**
-	 * ƒ{ƒ^ƒ“‚ÌƒAƒNƒVƒ‡ƒ“‚ÌŒŸo‚ğİ’è‚·‚é
+	 * ãƒœã‚¿ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®æ¤œå‡ºã‚’è¨­å®šã™ã‚‹
 	 * @param actionListener ActionListener
 	 */
 	public void addButtonListener(ActionListener actionListener) {
 		fileOpenButton.addActionListener(actionListener);
 		viewResetButton.addActionListener(actionListener);
+		looktimeButton.addActionListener(actionListener);
 		aggregateButton.addActionListener(actionListener);
 		imageSaveButton.addActionListener(actionListener);
 	}
 	
 	
 	public void addSliderListener(ChangeListener changeListener) {
-		intensityRatioSlider.addChangeListener(changeListener);
+		//intensityRatioSlider.addChangeListener(changeListener);
+		transparencySlider.addChangeListener(changeListener);
+		transparency_idSlider1.addChangeListener(changeListener);
+		transparency_idSlider2.addChangeListener(changeListener);
+		looktimeSlider.addChangeListener(changeListener);
 	}
 
 	/**
-	 * ƒ‰ƒWƒIƒ{ƒ^ƒ“‚ÌƒAƒNƒVƒ‡ƒ“‚ğŒŸ’m‚·‚éActionListener
+	 * ãƒ©ã‚¸ã‚ªãƒœã‚¿ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’æ¤œçŸ¥ã™ã‚‹ActionListener
 	 * @author itot
 	 */
 	class RadioButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			JRadioButton buttonPushed = (JRadioButton) e.getSource();
-			if (buttonPushed == pathButton) {
-				canvas.setDisplayMode(canvas.DISPLAY_PATH);
-			}
 			if (buttonPushed == populationButton) {
 				canvas.setDisplayMode(canvas.DISPLAY_POPULATION);
 			}
-			if (buttonPushed == directionButton) {
-				canvas.setDisplayMode(canvas.DISPLAY_DIRECTION);
+			if (buttonPushed == maleButton) {
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_MALE);
+					BlockDrawer.setAggregatestatistics(0);
+				}
+			}
+			if (buttonPushed == femaleButton) {
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_FEMALE);
+					BlockDrawer.setAggregatestatistics(0);
+				}
+			}
+			if (buttonPushed == under15Button) {
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_UNDER15);
+					BlockDrawer.setAggregatestatistics(0);
+				}
+			}
+			if (buttonPushed == b1550Button) {
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_BETWEEN1550);
+					BlockDrawer.setAggregatestatistics(0);
+				}
+			}
+			if (buttonPushed == over50Button) {
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_OVER50);
+					BlockDrawer.setAggregatestatistics(0);
+				}
 			}
 			if (buttonPushed == allButton) {
-				if(ds != null)
-					ds.grid.setAggregateFlag(Grid.AGGREGATE_ALL);
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_ALL);
+					BlockDrawer.setAggregatestatistics(0);
+				}
 			}
-			if (buttonPushed == stopButton) {
-				if(ds != null)
-					ds.grid.setAggregateFlag(Grid.AGGREGATE_STOP);
+			if (buttonPushed == genderratioButton) {
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_GENDER_RATIO);
+					BlockDrawer.setAggregatestatistics(0);
+				}
 			}
-			if (buttonPushed == passButton) {
-				if(ds != null)
-					ds.grid.setAggregateFlag(Grid.AGGREGATE_PASS);
+			if (buttonPushed == increase_decreaseButton) {
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_INCREASE_DECREASE);
+					BlockDrawer.setAggregatestatistics(1);
+				}
 			}
-			if (buttonPushed == ratioButton) {
-				if(ds != null)
-					ds.grid.setAggregateFlag(Grid.AGGREGATE_RATIO);
+			if (buttonPushed == statisticsButton) {
+				if(ds != null){
+					ds.block.setAggregateFlag(BlockSet.AGGREGATE_STATISTICS);
+					BlockDrawer.setAggregatestatistics(1);
+				}
 			}
+			
 			canvas.display();
 		}
 	}
 
 	/**
-	 * ƒ{ƒ^ƒ“‚ÌƒAƒNƒVƒ‡ƒ“‚ğŒŸ’m‚·‚éActionListener
+	 * ãƒœã‚¿ãƒ³ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’æ¤œçŸ¥ã™ã‚‹ActionListener
 	 * @author itot
 	 */
 	class ButtonListener implements ActionListener {
@@ -266,7 +375,7 @@ public class ViewingPanel extends JPanel  {
 			JButton buttonPushed = (JButton) e.getSource();
 			if (buttonPushed == fileOpenButton) {
 				ds = fileOpener.getDataSet();
-				ppanel.setDataSet(ds);
+				//ppanel.setDataSet(ds);
 				canvas.setDataSet(ds);
 				canvas.display();
 			}
@@ -274,12 +383,16 @@ public class ViewingPanel extends JPanel  {
 				canvas.viewReset();
 				canvas.display();
 			}
+			if (buttonPushed == looktimeButton) {				
+				BlockDrawer.setVisible();
+				canvas.display();
+			}
 			if (buttonPushed == aggregateButton) {
-				int min = Integer.parseInt(minHourField.getText());
-				ds.grid.setMinHour(min);
+				/*int min = Integer.parseInt(minHourField.getText());
+				ds.block.setMinHour(min);
 				int max = Integer.parseInt(maxHourField.getText());
-				ds.grid.setMaxHour(max);
-				ds.grid.aggregate();
+				ds.block.setMaxHour(max);*/
+				ds.block.aggregate();
 				canvas.display();
 			}
 			if(buttonPushed == imageSaveButton) {
@@ -292,10 +405,34 @@ public class ViewingPanel extends JPanel  {
 	class SliderListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e) {
 			JSlider sliderChanged = (JSlider) e.getSource();
-			if (sliderChanged == intensityRatioSlider) {
+			/*if (sliderChanged == intensityRatioSlider) {
 				double t = (double)intensityRatioSlider.getValue() / 100.0;
 				canvas.setIntensityRatio(t);
 				canvas.display();
+			}*/
+			if (sliderChanged == transparencySlider) {
+				double t = (double)transparencySlider.getValue();
+				ds.block.setTransparency(t, 0);
+				canvas.display();
+				//transparencyLabel.setText("value : " + transparencySlider.getValue());
+			}
+			if (sliderChanged == transparency_idSlider1) {
+				double t = (double)transparency_idSlider1.getValue();
+				ds.block.setTransparency(t, 1);
+				canvas.display();
+				//transparencyLabel.setText("value : " + transparencySlider.getValue());
+			}
+			if (sliderChanged == transparency_idSlider2) {
+				double t = (double)transparency_idSlider2.getValue();
+				ds.block.setTransparency(t, 2);
+				canvas.display();
+				//transparencyLabel.setText("value : " + transparencySlider.getValue());
+			}
+			if (sliderChanged == looktimeSlider) {
+				int t = (int)looktimeSlider.getValue();
+				ds.block.setLooktime(t);
+				canvas.display();
+				//transparencyLabel.setText("value : " + transparencySlider.getValue());
 			}
 		}
 	}

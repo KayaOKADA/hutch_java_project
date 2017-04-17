@@ -4,7 +4,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /*
- * HeianView ‚Ì‚½‚ß‚ÌMenuBar‚ğ\’z‚·‚é
+ * HeianView ã®ãŸã‚ã®MenuBarã‚’æ§‹ç¯‰ã™ã‚‹
  * @author itot
  */
 public class MenuBar extends JMenuBar {
@@ -34,7 +34,7 @@ public class MenuBar extends JMenuBar {
 	
 	/**
 	 * Constructor
-	 * @param withReadyMadeMenu ’Êí‚Ítrue
+	 * @param withReadyMadeMenu é€šå¸¸ã¯true
 	 */
 	public MenuBar(boolean withReadyMadeMenu) {
 		
@@ -55,7 +55,7 @@ public class MenuBar extends JMenuBar {
 	}
 
 	/**
-	 * File‚ÉŠÖ‚·‚éƒƒjƒ…[‚ğ\’z‚·‚é
+	 * Fileã«é–¢ã™ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’æ§‹ç¯‰ã™ã‚‹
 	 */
 	public void buildFileMenu() {
 
@@ -73,7 +73,7 @@ public class MenuBar extends JMenuBar {
 
 
 	/**
-	 * Appearance ‚ÉŠÖ‚·‚éƒƒjƒ…[‚ğ\’z‚·‚é
+	 * Appearance ã«é–¢ã™ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’æ§‹ç¯‰ã™ã‚‹
 	 */
 	public void buildAppearanceMenu() {
 
@@ -91,7 +91,7 @@ public class MenuBar extends JMenuBar {
 
 	
 	/**
-	 * Canvas ‚ğƒZƒbƒg‚·‚é
+	 * Canvas ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void setCanvas(Canvas c) {
 		canvas = c;;
@@ -99,7 +99,7 @@ public class MenuBar extends JMenuBar {
 	
 	
 	/**
-	 * FileOpener ‚ğƒZƒbƒg‚·‚é
+	 * FileOpener ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 */
 	public void setFileOpener(FileOpener fo) {
 		fileOpener = fo;
@@ -108,9 +108,9 @@ public class MenuBar extends JMenuBar {
 
 
 	/**
-	 * ‘I‘ğ‚³‚ê‚½ƒƒjƒ…[ƒAƒCƒeƒ€‚ğ•Ô‚·
-	 * @param name ‘I‘ğ‚³‚ê‚½ƒƒjƒ…[–¼
-	 * @return JMenuItem ‘I‘ğ‚³‚ê‚½ƒƒjƒ…[ƒAƒCƒeƒ€
+	 * é¸æŠã•ã‚ŒãŸãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ ã‚’è¿”ã™
+	 * @param name é¸æŠã•ã‚ŒãŸãƒ¡ãƒ‹ãƒ¥ãƒ¼å
+	 * @return JMenuItem é¸æŠã•ã‚ŒãŸãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ 
 	 */
 	public JMenuItem getMenuItem(String name) {
 
@@ -132,7 +132,7 @@ public class MenuBar extends JMenuBar {
 	}
 
 	/**
-	 * ƒƒjƒ…[‚ÉŠÖ‚·‚éƒAƒNƒVƒ‡ƒ“‚ÌŒŸ’m‚ğİ’è‚·‚é
+	 * ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«é–¢ã™ã‚‹ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®æ¤œçŸ¥ã‚’è¨­å®šã™ã‚‹
 	 * @param actionListener ActionListener
 	 */
 	public void addMenuListener(ActionListener actionListener) {
@@ -148,7 +148,7 @@ public class MenuBar extends JMenuBar {
 	}
 	
 	/**
-	 * ƒƒjƒ…[‚ÌŠeƒCƒxƒ“ƒg‚ğŒŸo‚µA‚»‚ê‚É‘Î‰‚·‚éƒR[ƒ‹ƒoƒbƒNˆ—‚ğŒÄ‚Ño‚·
+	 * ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®å„ã‚¤ãƒ™ãƒ³ãƒˆã‚’æ¤œå‡ºã—ã€ãã‚Œã«å¯¾å¿œã™ã‚‹ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯å‡¦ç†ã‚’å‘¼ã³å‡ºã™
 	 * 
 	 * @author itot
 	 */

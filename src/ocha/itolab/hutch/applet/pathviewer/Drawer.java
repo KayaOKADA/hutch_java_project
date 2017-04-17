@@ -2,39 +2,35 @@ package ocha.itolab.hutch.applet.pathviewer;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
-import java.io.*;
 
 import javax.imageio.ImageIO;
-import javax.media.opengl.GL;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.GLEventListener;
-import javax.media.opengl.glu.GLU;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.gl2.GLUgl2;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
-import jogamp.nativewindow.x11.awt.X11AWTGraphicsConfigurationFactory;
-
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.gl2.GLUgl2;
-import javax.print.attribute.standard.PrinterIsAcceptingJobs;
-import javax.swing.event.DocumentListener;
-
-import ocha.itolab.hutch.core.data.*;
-
+import ocha.itolab.hutch.core.data.DataSet;
 
 
 public class Drawer implements GLEventListener {
 
-	private GL gl;
-	private GL2 gl2;
+	static private GL gl;
+	static private GL2 gl2;
 	private GLU glu;
 	private GLUgl2 glu2;
 	private GLUT glut;
@@ -49,23 +45,23 @@ public class Drawer implements GLEventListener {
 
 	DoubleBuffer modelview, projection, p1, p2, p3, p4;
 	IntBuffer viewport;
-	int pickX = -1, pickY = -1;
+	int pickedBlockID = -1;
 	
 	int imageSize[] = new int[2];
 	double datevalue = 0.0, interval = 0.0;
 	boolean isMousePressed = false;
-	double linewidth = 1.0, intensityRatio = 0.5;
-	double imageShiftX = 0.0, imageShiftY = 0.0, imageScale = 1.0;
+	double linewidth = 1.0, intensityRatio = 0.5, transparency = 0.5;
+	static double imageShiftX = -0.08, imageShiftY = 0.33, imageScale = 1.3;
 	int windowWidth, windowHeight;
-	int numCluster = 0, displayMode = Canvas.DISPLAY_PATH;
+	int numCluster = 0, displayMode = Canvas.DISPLAY_POPULATION;
 	
 	Transformer trans = null;
 	DrawerUtility du = null;
 	GLCanvas glcanvas;
 	
-	DataSet ds;
+	static DataSet ds;
 	BufferedImage image;
-	Texture texture;
+	static Texture texture;
 	
 	String path = "";
 	String filename = "";
@@ -74,8 +70,8 @@ public class Drawer implements GLEventListener {
 	
 	/**
 	 * Constructor
-	 * @param width •`‰æ—Ìˆæ‚Ì•
-	 * @param height •`‰æ—Ìˆæ‚Ì‚‚³
+	 * @param width æç”»é ˜åŸŸã®å¹…
+	 * @param height æç”»é ˜åŸŸã®é«˜ã•
 	 */
 	public Drawer(int width, int height, GLCanvas c) {
 		
@@ -98,8 +94,8 @@ public class Drawer implements GLEventListener {
 
 	/**
 	 * Constructor
-	 * @param width •`‰æ—Ìˆæ‚Ì•
-	 * @param height •`‰æ—Ìˆæ‚Ì‚‚³
+	 * @param width æç”»é ˜åŸŸã®å¹…
+	 * @param height æç”»é ˜åŸŸã®é«˜ã•
 	 */
 	public Drawer() {
 		this(800, 600, null);
@@ -111,7 +107,7 @@ public class Drawer implements GLEventListener {
 	}
 
 	/**
-	 * Transformer‚ğƒZƒbƒg‚·‚é
+	 * Transformerã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 * @param transformer 
 	 */
 	public void setTransformer(Transformer view) {
@@ -120,9 +116,9 @@ public class Drawer implements GLEventListener {
 	}
 
 	/**
-	 * •`‰æ—Ìˆæ‚ÌƒTƒCƒY‚ğİ’è‚·‚é
-	 * @param width •`‰æ—Ìˆæ‚Ì•
-	 * @param height •`‰æ—Ìˆæ‚Ì‚‚³
+	 * æç”»é ˜åŸŸã®ã‚µã‚¤ã‚ºã‚’è¨­å®šã™ã‚‹
+	 * @param width æç”»é ˜åŸŸã®å¹…
+	 * @param height æç”»é ˜åŸŸã®é«˜ã•
 	 */
 	public void setWindowSize(int width, int height) {
 		imageSize[0] = width;
@@ -132,24 +128,24 @@ public class Drawer implements GLEventListener {
 
 	
 	/**
-	 * ƒAƒmƒe[ƒVƒ‡ƒ“•\¦‚ÌON/OFF§Œä
-	 * @param flag •\¦‚·‚é‚È‚çtrue, •\¦‚µ‚È‚¢‚È‚çfalse
+	 * ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³è¡¨ç¤ºã®ON/OFFåˆ¶å¾¡
+	 * @param flag è¡¨ç¤ºã™ã‚‹ãªã‚‰true, è¡¨ç¤ºã—ãªã„ãªã‚‰false
 	 */
 	public void setAnnotationSwitch(boolean flag) {
 		
 	}
 	
 	/**
-	 * ƒ}ƒEƒXƒ{ƒ^ƒ“‚ÌON/OFF‚ğİ’è‚·‚é
-	 * @param isMousePressed ƒ}ƒEƒXƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚ê‚Îtrue
+	 * ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ã®ON/OFFã‚’è¨­å®šã™ã‚‹
+	 * @param isMousePressed ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚Œã°true
 	 */
 	public void setMousePressSwitch(boolean isMousePressed) {
 		this.isMousePressed = isMousePressed;
 	}
 
 	/**
-	 * ü‚Ì‘¾‚³‚ğƒZƒbƒg‚·‚é
-	 * @param lw ü‚Ì‘¾‚³i‰æ‘f”j
+	 * ç·šã®å¤ªã•ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+	 * @param lw ç·šã®å¤ªã•ï¼ˆç”»ç´ æ•°ï¼‰
 	 */
 	public void setLinewidth(double lw) {
 		linewidth = lw;
@@ -163,6 +159,10 @@ public class Drawer implements GLEventListener {
 	
 	public void setIntensityRatio(double t) {
 		intensityRatio = t;
+	}
+	
+	public void setTransparency(double t) {
+		transparency = t;
 	}
 	
 	public void setDataSet(DataSet ds) {
@@ -210,7 +210,7 @@ public class Drawer implements GLEventListener {
 	
 	
 	/**
-	 * ƒ_ƒ~[ƒƒ\ƒbƒh
+	 * ãƒ€ãƒŸãƒ¼ãƒ¡ã‚½ãƒƒãƒ‰
 	 */
 	public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
 			boolean deviceChanged) {
@@ -219,7 +219,7 @@ public class Drawer implements GLEventListener {
 
 
 	/**
-	 * ‰Šú‰»
+	 * åˆæœŸåŒ–
 	 */
 	public void init(GLAutoDrawable drawable) {
 		gl = drawable.getGL();
@@ -235,9 +235,9 @@ public class Drawer implements GLEventListener {
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glEnable(GL2.GL_NORMALIZE);
 		gl2.glLightModeli(GL2.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_TRUE);
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		
-		// ƒeƒNƒXƒ`ƒƒŠÖŒWƒpƒ‰ƒ[ƒ^
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£é–¢ä¿‚ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP);
 		gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP);
@@ -245,11 +245,23 @@ public class Drawer implements GLEventListener {
 		gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 		gl2.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_DECAL);
 		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
+		
+		// Zãƒãƒƒãƒ•ã‚¡æ³•ã‚’æœ‰åŠ¹ã«ã™ã‚‹
+		gl.glEnable(GL.GL_RGBA);
+		gl.glEnable(GL2.GL_DEPTH);
+	    gl.glEnable(GL2.GL_DOUBLE);
+	    gl.glEnable(GL.GL_DEPTH_TEST);
+	    gl.glEnable(GL2.GL_NORMALIZE);
+	    gl.glDisable(GL.GL_CULL_FACE);
+	    //gl.glCullFace(GL.GL_BACK);
+	    
+	    gl2.glLoadIdentity();
+		glu.gluLookAt( centerX, centerY, (centerZ + 100.0), centerX, centerY, centerZ, 0.0, 1.0,0.0 );
 	}
 	
 	
 	/**
-	 * Ä•`‰æ
+	 * å†æç”»
 	 */
 	public void reshape(GLAutoDrawable drawable,
 			int x, int y, int width, int height) {
@@ -258,10 +270,10 @@ public class Drawer implements GLEventListener {
 		windowHeight = height;
 	
 		
-		// ƒrƒ…[ƒ|[ƒg‚Ì’è‹`
+		// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®å®šç¾©
 		gl2.glViewport(0, 0, width, height);
 				
-		// “Š‰e•ÏŠ·s—ñ‚Ì’è‹`
+		// æŠ•å½±å¤‰æ›è¡Œåˆ—ã®å®šç¾©
 		gl2.glMatrixMode(GL2.GL_PROJECTION);
 		gl2.glLoadIdentity();
 		gl2.glOrtho(-width / 200.0, width / 200.0, 
@@ -275,7 +287,7 @@ public class Drawer implements GLEventListener {
 
 
 	/**
-	 * •`‰æ‚ğÀs‚·‚é
+	 * æç”»ã‚’å®Ÿè¡Œã™ã‚‹
 	 */
 	public void display(GLAutoDrawable drawable) {
 		if(ds == null) return;
@@ -287,11 +299,10 @@ public class Drawer implements GLEventListener {
 		
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
-		// ‹“_ˆÊ’u‚ğŒˆ’è
+		// è¦–ç‚¹ä½ç½®ã‚’æ±ºå®š
 		gl2.glLoadIdentity();
-		glu.gluLookAt( centerX, centerY, (centerZ + 20.0),
-					centerX, centerY, centerZ,
-					0.0, 1.0, 0.0 );
+		//glu.gluLookAt( centerX, centerY, (centerZ + 20.0), centerX, centerY, centerZ, 0.0, 1.0, 0.0 );
+		glu.gluLookAt( centerX, centerY, (centerZ + 100.0), centerX, centerY, centerZ, 0.0, 1.0, 0.0 );
 
 		shiftX = trans.getViewShift(0);
 		shiftY = trans.getViewShift(1);
@@ -299,48 +310,55 @@ public class Drawer implements GLEventListener {
 		angleX = trans.getViewRotateY() * 45.0;
 		angleY = trans.getViewRotateX() * 45.0;
 
-		// s—ñ‚ğƒvƒbƒVƒ…
+		// è¡Œåˆ—ã‚’ãƒ—ãƒƒã‚·ãƒ¥
 		gl2.glPushMatrix();
 		
-		// ‚¢‚Á‚½‚ñŒ´“_•ûŒü‚É•¨‘Ì‚ğ“®‚©‚·
+		// ã„ã£ãŸã‚“åŸç‚¹æ–¹å‘ã«ç‰©ä½“ã‚’å‹•ã‹ã™
 		gl2.glTranslated(centerX, centerY, centerZ);
 		
-		// ƒ}ƒEƒX‚ÌˆÚ“®—Ê‚É‰‚¶‚Ä‰ñ“]
+		// ãƒã‚¦ã‚¹ã®ç§»å‹•é‡ã«å¿œã˜ã¦å›è»¢
 		gl2.glRotated(angleX, 1.0, 0.0, 0.0);
 		gl2.glRotated(angleY, 0.0, 1.0, 0.0); 
 
-		// ƒ}ƒEƒX‚ÌˆÚ“®—Ê‚É‰‚¶‚ÄŠg‘åk¬
+		// ãƒã‚¦ã‚¹ã®ç§»å‹•é‡ã«å¿œã˜ã¦æ‹¡å¤§ç¸®å°
 		gl2.glScaled(scale, scale, 1.0);
 			
-		// ƒ}ƒEƒX‚ÌˆÚ“®—Ê‚É‰‚¶‚ÄˆÚ“®
+		// ãƒã‚¦ã‚¹ã®ç§»å‹•é‡ã«å¿œã˜ã¦ç§»å‹•
 		gl2.glTranslated((shiftX * 50.0), (shiftY * 50.0), 0.0);
 		
-		// •¨‘Ì‚ğ‚à‚Æ‚ÌˆÊ’u‚É–ß‚·
+		// ç‰©ä½“ã‚’ã‚‚ã¨ã®ä½ç½®ã«æˆ»ã™
 		gl2.glTranslated(-centerX, -centerY, -centerZ);
 		
-		// •ÏŠ·s—ñ‚Æƒrƒ…[ƒ|[ƒg‚Ì’l‚ğ•Û‘¶‚·‚é
+		// å¤‰æ›è¡Œåˆ—ã¨ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®å€¤ã‚’ä¿å­˜ã™ã‚‹
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);
 		gl2.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, modelview);
 		gl2.glGetDoublev(GL2.GL_PROJECTION_MATRIX, projection);
 
 
-		// ‹OÕ‚ğ•\¦‚·‚é
-		gl2.glDisable(GL2.GL_LIGHTING);
-		drawFloor();
+		// è»Œè·¡ã‚’è¡¨ç¤ºã™ã‚‹
+		gl2.glEnable(GL2.GL_NORMALIZE);
+		gl2.glEnable(GL2.GL_LIGHTING);
+		float silver[] = {0.5f, 0.5f, 0.5f, 1.0f};
+	    float lightpos[] = { -15.0f, -40.0f, 10.0f, 1.0f };
+        gl2.glEnable(GL2.GL_LIGHT0);
+        gl2.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightpos, 0);
+        gl2.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, silver, 0);
+		gl2.glEnable(GL2.GL_COLOR_MATERIAL);	
+		//drawFloor();
 		if(displayMode == Canvas.DISPLAY_PATH) {
 			PathDrawer.setIntensityRatio(1.0);
 			PathDrawer.drawPath(gl2, ds, numCluster);
 		}
 		else {
-			if(pickX >= 0 && pickY >= 0) {
-				GridDrawer.setIntensityRatio(intensityRatio);
+			if(pickedBlockID >= 0) {
+				BlockDrawer.setIntensityRatio(intensityRatio);
 				PathDrawer.setIntensityRatio(1.0 - intensityRatio);
-				GridDrawer.drawGrid(gl2, ds, displayMode);
-				PathDrawer.drawPathLocal(gl2, ds, numCluster, pickX, pickY);
+				BlockDrawer.drawBlock(gl2, ds, displayMode);
+				PathDrawer.drawPathLocal(gl2, ds, numCluster, pickedBlockID);
 			}
 			else {
-				GridDrawer.setIntensityRatio(1.0);
-				GridDrawer.drawGrid(gl2, ds, displayMode);
+				BlockDrawer.setIntensityRatio(1.0);
+				BlockDrawer.drawBlock(gl2, ds, displayMode);
 			}
 		}
 		
@@ -349,14 +367,15 @@ public class Drawer implements GLEventListener {
 			saveImageFlag = false;
 		}
 		
-		// s—ñ‚ğƒ|ƒbƒv
+		// è¡Œåˆ—ã‚’ãƒãƒƒãƒ—
 		gl2.glPopMatrix();
-		
+		//ViewingPanel.setTimepanel();
 	}
 
 
+
 	
-	void drawFloor() {
+	public static void drawFloor(float z) {
 		if(ds == null) return;
 		if(texture == null) return;
 		
@@ -370,26 +389,26 @@ public class Drawer implements GLEventListener {
 		double miny = centy + ((minmax[2] - centy) + (imageShiftY * diffy)) * imageScale;
 		double maxy = centy + ((minmax[3] - centy) + (imageShiftY * diffy)) * imageScale;
 	
-		
-		// ƒeƒNƒXƒ`ƒƒ‰æ‘œƒf[ƒ^‚Ì“o˜^‚ÌŠJn
+		gl2.glColor4d(1.0, 1.0, 1.0, 0.5);
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ç”»åƒãƒ‡ãƒ¼ã‚¿ã®ç™»éŒ²ã®é–‹å§‹
 		gl.glEnable(GL.GL_TEXTURE_2D);
 
-		// ƒeƒNƒXƒ`ƒƒÀ•W’l‚Ìİ’è
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™å€¤ã®è¨­å®š
 		texture.enable(gl);
 		texture.bind(gl);
 		gl2.glBegin(GL2.GL_QUADS);
 		gl2.glTexCoord2d(0.0, 1.0);
-		gl2.glVertex3d(minx, miny, -0.1);
+		gl2.glVertex3d(minx, miny, z);
 		gl2.glTexCoord2d(1.0, 1.0);
-		gl2.glVertex3d(maxx, miny, -0.1);
+		gl2.glVertex3d(maxx, miny, z);
 		gl2.glTexCoord2d(1.0, 0.0);
-		gl2.glVertex3d(maxx, maxy, -0.1);
+		gl2.glVertex3d(maxx, maxy, z);
 		gl2.glTexCoord2d(0.0, 0.0);
-		gl2.glVertex3d(minx, maxy, -0.1);
+		gl2.glVertex3d(minx, maxy, z);
 		gl2.glEnd();
 		texture.disable(gl);
 
-		// ƒeƒNƒXƒ`ƒƒ‰æ‘œƒf[ƒ^‚Ì“o˜^‚ÌI—¹
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ç”»åƒãƒ‡ãƒ¼ã‚¿ã®ç™»éŒ²ã®çµ‚äº†
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		
 	}
@@ -398,54 +417,33 @@ public class Drawer implements GLEventListener {
 	public void pickObjects(int px, int py) {
 		if(ds == null) return;
 		py = viewport.get(3) - py + 1;
-		
-		double[] xarray = ds.grid.getXarray();
-		double[] yarray = ds.grid.getYarray();
-		
-		pickX = -1;
-		for(int i = 0; i < xarray.length; i++) {
-			glu2.gluProject(xarray[i], yarray[0], 0.0, modelview, projection, viewport, p1);
-			double xx = p1.get(0);
-			if(xx > (double)px) {
-				pickX = i - 1;  break;
-			}
-		}
-		
-		pickY = -1;
-		for(int i = 0; i < yarray.length; i++) {
-			glu2.gluProject(xarray[0], yarray[i], 0.0, modelview, projection, viewport, p1);
-			double yy = p1.get(1);
-			if(yy > (double)py) {
-				pickY = i - 1;  break;
-			}
-		}
-		
-		//System.out.println(px + " " + py + " " + pickX + " " + pickY);
+		glu2.gluUnProject((double)px, (double)py, 0.0, modelview, projection, viewport, p1);
+		pickedBlockID = ds.block.specifyEnclosingBlock(p1.get(0), p1.get(1));
 	}
 	
 	
 	
 	void saveImage() {
 		
-		// RGB‚È‚ç3, RGBA‚È‚ç4
+		// RGBãªã‚‰3, RGBAãªã‚‰4
         int channelNum = 4;
         int allocSize = windowWidth * windowHeight * channelNum;
         ByteBuffer byteBuffer = ByteBuffer.allocate(allocSize);
         //gl2.glFlush();
-        // “Ç‚İæ‚éOpneGL‚Ìƒoƒbƒtƒ@‚ğw’è GL_FRONT:ƒtƒƒ“ƒgƒoƒbƒtƒ@@GL_BACK:ƒoƒbƒNƒoƒbƒtƒ@
+        // èª­ã¿å–ã‚‹OpneGLã®ãƒãƒƒãƒ•ã‚¡ã‚’æŒ‡å®š GL_FRONT:ãƒ•ãƒ­ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡ã€€GL_BACK:ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡
         gl2.glReadBuffer( GL2.GL_BACK );
  
-        // OpenGL‚Å‰æ–Ê‚É•`‰æ‚³‚ê‚Ä‚¢‚é“à—e‚ğƒoƒbƒtƒ@‚ÉŠi”[
-        gl2.glReadPixels(0,             // “Ç‚İæ‚é—Ìˆæ‚Ì¶‰º‹÷‚ÌxÀ•W
-                0,                      // “Ç‚İæ‚é—Ìˆæ‚Ì¶‰º‹÷‚ÌyÀ•W
-                windowWidth,             // “Ç‚İæ‚é—Ìˆæ‚Ì•
-                windowHeight,            // “Ç‚İæ‚é—Ìˆæ‚Ì‚‚³
-                GL2.GL_BGRA,            // æ“¾‚µ‚½‚¢Fî•ñ‚ÌŒ`®
-                GL2.GL_UNSIGNED_BYTE,   // “Ç‚İæ‚Á‚½ƒf[ƒ^‚ğ•Û‘¶‚·‚é”z—ñ‚ÌŒ^
-                (Buffer) byteBuffer     // ƒrƒbƒgƒ}ƒbƒv‚ÌƒsƒNƒZƒ‹ƒf[ƒ^iÀÛ‚É‚ÍƒoƒCƒg”z—ñj‚Ö‚Ìƒ|ƒCƒ“ƒ^
+        // OpenGLã§ç”»é¢ã«æç”»ã•ã‚Œã¦ã„ã‚‹å†…å®¹ã‚’ãƒãƒƒãƒ•ã‚¡ã«æ ¼ç´
+        gl2.glReadPixels(0,             // èª­ã¿å–ã‚‹é ˜åŸŸã®å·¦ä¸‹éš…ã®xåº§æ¨™
+                0,                      // èª­ã¿å–ã‚‹é ˜åŸŸã®å·¦ä¸‹éš…ã®yåº§æ¨™
+                windowWidth,             // èª­ã¿å–ã‚‹é ˜åŸŸã®å¹…
+                windowHeight,            // èª­ã¿å–ã‚‹é ˜åŸŸã®é«˜ã•
+                GL2.GL_BGRA,            // å–å¾—ã—ãŸã„è‰²æƒ…å ±ã®å½¢å¼
+                GL2.GL_UNSIGNED_BYTE,   // èª­ã¿å–ã£ãŸãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹é…åˆ—ã®å‹
+                (Buffer) byteBuffer     // ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã®ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ï¼ˆå®Ÿéš›ã«ã¯ãƒã‚¤ãƒˆé…åˆ—ï¼‰ã¸ã®ãƒã‚¤ãƒ³ã‚¿
         );
       
-        // glReadBuffer‚Åæ“¾‚µ‚½ƒf[ƒ^(ByteBuffer)‚ğDataBuffer‚É•ÏŠ·‚·‚é
+        // glReadBufferã§å–å¾—ã—ãŸãƒ‡ãƒ¼ã‚¿(ByteBuffer)ã‚’DataBufferã«å¤‰æ›ã™ã‚‹
         byte[] buff = byteBuffer.array();
     	BufferedImage imageBuffer =
 				new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_RGB);
@@ -479,9 +477,9 @@ public class Drawer implements GLEventListener {
 	}
 	
 	/**
-	 * ©“®¶¬‚³‚ê‚½ƒƒ\ƒbƒhi‚»‚Ì‚Ü‚Ü‚É‚µ‚Ä‚¨‚­
+	 * è‡ªå‹•ç”Ÿæˆã•ã‚ŒãŸãƒ¡ã‚½ãƒƒãƒ‰ï¼ˆãã®ã¾ã¾ã«ã—ã¦ãŠã
 	 */
 	public void dispose(GLAutoDrawable arg0) {
-		// ‹ó—“‚Ì‚Ü‚Ü‚É‚µ‚Ä‚¨‚­
+		// ç©ºæ¬„ã®ã¾ã¾ã«ã—ã¦ãŠã
 	}
 }

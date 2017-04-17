@@ -5,7 +5,8 @@ from sklearn.cluster import KMeans
 def main():
 
     # File input
-    datafile = open(sys.argv[1] + "clusteringInput.csv", "r")
+    #datafile = open(sys.argv[1] + "clusteringInput.csv", "r")
+    datafile = open("/Users/okadakaya/Downloads/Hutch/Python/" + "clusteringInput.csv", "r")
     numc = -1
     numline = 1
     numdim = 1
@@ -35,7 +36,8 @@ def main():
     print(labels)
     
     # File output
-    labelfile = open(sys.argv[1] + "clusteringOutput.csv", "w")
+#labelfile = open(sys.argv[1] + "clusteringOutput.csv", "w")
+    datafile = open("/Users/okadakaya/Downloads/Hutch/Python/" + "clusteringOutput.csv", "w")
     for label in labels:
         labelfile.write(str(label) + "\n")
     labelfile.close()

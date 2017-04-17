@@ -15,8 +15,8 @@ public class DrawerUtility {
 	
 	/**
 	 * Constructor
-	 * @param width •`‰æ—Ìˆæ‚Ì•
-	 * @param height •`‰æ—Ìˆæ‚Ì‚‚³
+	 * @param width æç”»é ˜åŸŸã®å¹…
+	 * @param height æç”»é ˜åŸŸã®é«˜ã•
 	 */
 	public DrawerUtility(int width, int height) {
 		imageSize[0] = width;
@@ -25,7 +25,7 @@ public class DrawerUtility {
 
 	
 	/**
-	 * Transformer‚ğƒZƒbƒg‚·‚é
+	 * Transformerã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	 * @param t Transformer
 	 */
 	public void setTransformer(Transformer t) {
@@ -33,9 +33,9 @@ public class DrawerUtility {
 	}
 	
 	/**
-	 * •`‰æ—Ìˆæ‚ÌƒTƒCƒY‚ğİ’è‚·‚é
-	 * @param width •`‰æ—Ìˆæ‚Ì•
-	 * @param height •`‰æ—Ìˆæ‚Ì‚‚³
+	 * æç”»é ˜åŸŸã®ã‚µã‚¤ã‚ºã‚’è¨­å®šã™ã‚‹
+	 * @param width æç”»é ˜åŸŸã®å¹…
+	 * @param height æç”»é ˜åŸŸã®é«˜ã•
 	 */
 	public void setWindowSize(int width, int height) {
 		imageSize[0] = width;
@@ -43,12 +43,12 @@ public class DrawerUtility {
 	}
 	
 	/**
-	 * “h‚è‚Â‚Ô‚·•¨‘Ì–Ê‚ªƒIƒ‚ƒe‚©ƒEƒ‰‚©‚ğ”»’è‚·‚é
-	 * @param px ‰æ–Êã‚ÌxÀ•W’l
-	 * @param py ‰æ–Êã‚ÌyÀ•W’l
-	 * @param e1 1ŒÂ–Ú‚Ì’¸“_‚ÌÀ•W’l
-	 * @param e2 2ŒÂ–Ú‚Ì’¸“_‚ÌÀ•W’l
-	 * @return ƒIƒ‚ƒe‚È‚çtrue
+	 * å¡—ã‚Šã¤ã¶ã™ç‰©ä½“é¢ãŒã‚ªãƒ¢ãƒ†ã‹ã‚¦ãƒ©ã‹ã‚’åˆ¤å®šã™ã‚‹
+	 * @param px ç”»é¢ä¸Šã®xåº§æ¨™å€¤
+	 * @param py ç”»é¢ä¸Šã®yåº§æ¨™å€¤
+	 * @param e1 1å€‹ç›®ã®é ‚ç‚¹ã®åº§æ¨™å€¤
+	 * @param e2 2å€‹ç›®ã®é ‚ç‚¹ã®åº§æ¨™å€¤
+	 * @return ã‚ªãƒ¢ãƒ†ãªã‚‰true
 	 */
 	int whichSide(int px, int py, DoubleBuffer e1, DoubleBuffer e2) {
 		double a = (e1.get(1) - (double) py) * (e2.get(0) - (double) px);
@@ -62,14 +62,14 @@ public class DrawerUtility {
 	}
 	
 	/**
-	 * ƒsƒbƒN‚µ‚½ˆÊ’u‚ªlŠpŒ`–Ê‚Ì“à•”‚©‚ğ”»’è‚·‚é
-	 * @param px ‰æ–Êã‚ÌxÀ•W’l
-	 * @param py ‰æ–Êã‚ÌyÀ•W’l
-	 * @param pp1 1ŒÂ–Ú‚Ì’¸“_‚ÌÀ•W’l
-	 * @param pp2 2ŒÂ–Ú‚Ì’¸“_‚ÌÀ•W’l
-	 * @param pp3 3ŒÂ–Ú‚Ì’¸“_‚ÌÀ•W’l
-	 * @param pp4 4ŒÂ–Ú‚Ì’¸“_‚ÌÀ•W’l
-	 * @return “à•”‚È‚çtrue
+	 * ãƒ”ãƒƒã‚¯ã—ãŸä½ç½®ãŒå››è§’å½¢é¢ã®å†…éƒ¨ã‹ã‚’åˆ¤å®šã™ã‚‹
+	 * @param px ç”»é¢ä¸Šã®xåº§æ¨™å€¤
+	 * @param py ç”»é¢ä¸Šã®yåº§æ¨™å€¤
+	 * @param pp1 1å€‹ç›®ã®é ‚ç‚¹ã®åº§æ¨™å€¤
+	 * @param pp2 2å€‹ç›®ã®é ‚ç‚¹ã®åº§æ¨™å€¤
+	 * @param pp3 3å€‹ç›®ã®é ‚ç‚¹ã®åº§æ¨™å€¤
+	 * @param pp4 4å€‹ç›®ã®é ‚ç‚¹ã®åº§æ¨™å€¤
+	 * @return å†…éƒ¨ãªã‚‰true
 	 */
 	public boolean isInside(
 			int px,

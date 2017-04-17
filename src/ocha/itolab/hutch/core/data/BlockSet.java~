@@ -1,0 +1,251 @@
+package ocha.itolab.hutch.core.data;
+
+import java.nio.DoubleBuffer;
+import java.util.*;
+import java.awt.Color;
+
+
+public class BlockSet {
+	ArrayList<OneBlock> blocklist = new ArrayList<OneBlock>();
+	DataSet ds = null;
+	Statistics statistics[];
+	
+	public static int AGGREGATE_ALL = 1;
+	public static int AGGREGATE_STOP = 2;
+	public static int AGGREGATE_PASS = 3;
+	public static int AGGREGATE_RATIO = 4;
+	double STOP_VELOCITY = 1.0e-6;
+	
+	int maxnum = 0, minnum = 0, maxstop = 0, minstop = 0, maxpass = 0, minpass = 0;
+	int minhour = 0, maxhour = 24;
+	double maxvel = 0.0, minratio = 0.0, maxratio = 0.0;
+	int aggregate = AGGREGATE_ALL;
+	
+	
+	public BlockSet(DataSet ds) {
+		this.ds = ds;
+	}
+	
+	
+	class OneBlock {
+		double positions[][];
+	}
+	
+	class Statistics {
+		int num;
+		int numstop;
+		ArrayList<PathSegment> segments = new ArrayList();
+	}
+	
+	/**
+	 * Add one block
+	 */
+	public void addOneBlock(double positions[][]) {
+		OneBlock ob = new OneBlock();
+		blocklist.add(ob);
+		ob.positions = positions;
+	}
+	
+	/**
+	 * Get number of blocks
+	 */
+	public int getNumBlocks() {
+		return blocklist.size();
+	}
+
+	/**
+	 * Get one block
+	 */
+	public double[][] getOneBlock(int id) {
+		OneBlock ob = blocklist.get(id);
+		return ob.positions;
+	}
+	
+	
+	/**/Users/okadakaya/Downloads/Hutch/src/ocha/itolab/hutch/core/data/BlockSet.java
+	 * Aggregate
+	 */
+	public void aggregate() {
+		double minmax[] = ds.getMinMax();
+		
+		// allocate an array corresponding to the set of rectangle subregions
+		statistics = new Statistics[blocklist.size()];
+		for(int i = 0; i < blocklist.size(); i++)
+			statistics[i] = new Statistics();
+		
+
+		// for each path
+		for(int i = 0; i < ds.getNumLineString(); i++) {
+			OneLineString ols = ds.getOneLineString(i);
+			boolean isNeeded = false;
+			
+			// for each pair of original vertices
+			for(int j = 1; j < ols.getNumOriginalPosition(); j++) {
+				double x0 = ols.getOriginalX(j - 1);
+				double y0 = ols.getOriginalY(j - 1);
+				double x1 = ols.getOriginalX(j);
+				double y1 = ols.getOriginalY(j);
+				double xc = (x0 + x1) * 0.5;
+				double yc = (y0 + y1) * 0.5;
+				int hour = ols.getOriginalHour(j);
+				
+				if(shouldDisplayed(x0, y0, x1, y1, hour) == false)
+					continue;
+				isNeeded = true;
+				
+				// determine which rectangle the segment is enclosed
+				int cid = specifyEnclosingBlock(xc, yc);
+				ols.setBlockId((j - 1), cid);
+				if(cid < 0) continue;
+				
+				// allocate a segment
+				PathSegment seg = new PathSegment();
+				seg.ols = ols;
+				seg.cx = xc;
+				seg.cy = yc;
+				seg.dx = x1 - x0;
+				seg.dy = y1 - y0;
+				seg.velocity = Math.sqrt(seg.dx * seg.dx + seg.dy * seg.dy);
+				statistics[cid].segments.add(seg);
+				if(seg.velocity < STOP_VELOCITY)
+					(statistics[cid].numstop)++;
+			
+			}
+			
+			ols.setDisplayFlag(isNeeded);
+		}
+		
+		
+		// search for maximum velocity
+		maxvel = 0.0;
+		for(int i = 0; i < blocklist.size(); i++) {
+			Statistics st = statistics[i];
+			
+			// for each segment in the rectangle
+			for(int j = 0; j < st.segments.size(); j++) {
+				PathSegment seg = st.segments.get(j);
+				if(maxvel < seg.velocity) maxvel = seg.velocity;
+			}
+		}
+		
+		// for each rectangular region
+		maxnum = maxstop = maxstop = 0;
+		minnum = minstop = minstop = 1000000;
+		maxratio = -1.0;   minratio = 1.0e+30;
+		for(int i = 0; i < blocklist.size(); i++) {
+			Statistics st = statistics[i];
+			if(st.segments.size() > 0) {
+				st.num = st.segments.size();
+				int stop = statistics[i].num - statistics[i].numstop;
+				double ratio = (double)statistics[i].numstop / (double)statistics[i].num;
+				if(minnum > st.num) minnum = st.num;
+				if(maxnum < st.num) maxnum = st.num;
+				if(minstop > stop) minstop = stop;				
+				if(maxstop < stop) maxstop = stop;
+				if(minratio > ratio) minratio = ratio;				
+				if(maxratio < ratio) maxratio = ratio;
+				if(minstop > statistics[i].numstop)
+					minstop = statistics[i].numstop;				
+				if(maxstop < statistics[i].numstop)
+					maxstop = statistics[i].numstop;
+			}
+			
+		}
+		
+	}
+
+	
+	public Color getBlockColorWithPopulation(int cid) {
+		double value = 0.0;
+		
+		if(aggregate == AGGREGATE_ALL)
+			value = (double)(statistics[cid].num - minnum) / (double)(maxnum - minnum);
+		if(aggregate == AGGREGATE_STOP)
+			value = (double)(statistics[cid].numstop - minstop) / (double)(maxstop - minstop);
+		if(aggregate == AGGREGATE_PASS)
+			value = (double)(statistics[cid].num - statistics[cid].numstop - minstop) / (double)(maxstop - minstop);
+		if(aggregate == AGGREGATE_RATIO) {
+			value = (double)statistics[cid].numstop / (double)statistics[cid].num;
+			value = (value - minratio) / (maxratio - minratio);
+		}
+		
+		if(value < 1.0e-4) return Color.BLACK;
+		double hue = (1.0 - value) * 160.0 / 240.0;
+		double intensity = 0.5 + 0.5 * value;
+		Color color = Color.getHSBColor((float)hue, 1.0f, (float)intensity);
+		return color;
+	}
+	
+	
+	
+	public void setMinHour(int h) {
+		minhour = h;
+	}
+	
+	public void setMaxHour(int h) {
+		maxhour = h;
+	}
+	
+	public void setAggregateFlag(int f) {
+		aggregate = f;
+		aggregate();
+	}
+	
+	
+	public ArrayList getLocalSegments(int id) {
+		return statistics[id].segments;
+	}
+	
+	
+	boolean shouldDisplayed(double x0, double y0, double x1, double y1, int hour) {
+		if(hour < minhour) return false;
+		if(hour > maxhour) return false;
+		if(aggregate == AGGREGATE_STOP) {
+			double dist = (x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1);
+			dist = Math.sqrt(dist);
+			if(dist > maxvel * 0.1) return false;
+		}
+		if(aggregate == AGGREGATE_PASS) {
+			double dist = (x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1);
+			dist = Math.sqrt(dist);
+			if(dist < maxvel * 0.3) return false;
+		}
+		
+		return true;
+	}
+	
+
+	
+	public int specifyEnclosingBlock(double xc, double yc) {
+		
+		for(int i = 0; i < blocklist.size(); i++) {
+			double[][] pos = getOneBlock(i);
+			
+			boolean flag1 = false, flag2 = false;
+			for(int j = 0; j < pos.length; j++) {
+				int j2 = (j == 0) ? (pos.length - 1) : (j - 1);
+				int ret = whichSide(xc, yc, pos[j], pos[j2]);
+				if(ret > 0) flag1 = true;
+				if(ret < 0) flag2 = true;
+				if(flag1 == true && flag2 == true) break;
+			}
+			if(flag1 == false || flag2 == false)
+				return i;
+			
+		}
+		
+		return -1;
+	}
+	
+	
+	int whichSide(double px, double py, double e1[], double e2[]) {
+		double a = (e1[1] - py) * (e2[0] - px);
+		double b = (e1[0] - px) * (e2[1] - py);
+		if (a > b)
+			return -1;
+		if (a < b)
+			return 1;
+		
+		return 0;
+	}
+}
