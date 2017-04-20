@@ -100,7 +100,6 @@ public class BlockDrawer {
 		        
 			    
 			    if(bb>1000){
-			    	//nothing to do
 			    }else{
 			    	/*if((bb>0.4) &&(transparency<0.1)){
 			    		continue;
@@ -128,26 +127,14 @@ public class BlockDrawer {
 				    		  { 2, 6, 5, 1 },
 				    		  { 7, 6, 5, 4 }
 				    		};
-			        //塗りつぶし
-			        /*
-				    gl2.glBegin(GL2.GL_POLYGON);
+			        //塗りつぶしブロック
+			        /*gl2.glBegin(GL2.GL_POLYGON);
 				    gl2.glVertex3d(bpos[0][0], bpos[0][1], 0.0);
 				    gl2.glVertex3d(bpos[1][0], bpos[1][1], 0.0);
 				    gl2.glVertex3d(bpos[2][0], bpos[2][1], 0.0);
 				    gl2.glVertex3d(bpos[3][0], bpos[3][1], 0.0);
 				    gl2.glEnd();
-			        */
-			       
-			        //立方体
-			        gl2.glBegin(GL2.GL_QUADS);
-			        for (int p = 0; p < 6; ++p) {
-			            for (int q = 0; q < 4; ++q) {
-			              gl2.glVertex3dv(vertex[face[p][q]], 0);
-			            }
-			        }
-			        gl2.glEnd();
-			        
-			        /*
+				    //枠だけブロック
 			        gl2.glBegin(GL2.GL_LINE_LOOP);
 			        gl2.glVertex3d(bpos[0][0], bpos[0][1], ((float)k)*0.1);
 			        gl2.glVertex3d(bpos[1][0], bpos[1][1], ((float)k)*0.1);
@@ -155,7 +142,30 @@ public class BlockDrawer {
 			        gl2.glVertex3d(bpos[3][0], bpos[3][1], ((float)k)*0.1);
 			        gl2.glEnd();
 			        */
+			       
+			        //立方体
+				    if(transparency > 0.02){
+				        gl2.glBegin(GL2.GL_QUADS);
+				        for (int p = 0; p < 6; ++p) {
+				            for (int q = 0; q < 4; ++q) {
+				              gl2.glVertex3dv(vertex[face[p][q]], 0);
+				            }
+				        }
+				        gl2.glEnd();
+				    }
 			        
+			        //ブロックまでの線をつける
+			        //gl2.glColor4d(1.0, 1.0, 1.0, 1.0);
+			        if(transparency > 0.1){
+			        	gl2.glColor4d(rr, gg, bb, 1.0);
+			        	double center_x = bpos[0][0] + (bpos[2][0]-bpos[0][0])/2;
+			        	double center_y = bpos[3][1] + (bpos[0][1]-bpos[3][1])/2;
+				        gl2.glBegin(GL2.GL_LINE_LOOP);
+				    	gl2.glVertex3f((float)center_x, (float)center_y, 0.0f);
+				    	gl2.glVertex3f((float)center_x, (float)center_y, (float)blocktime*(float)thick);
+				    	gl2.glEnd();
+			        }
+			        //目盛をつける
 			        gl2.glColor4d(1.0, 1.0, 1.0, 1.0);
 			        gl2.glBegin(GL2.GL_LINE_LOOP);
 			    	gl2.glVertex3f(12.0f, -10.0f, (float)blocktime*(float)thick);
