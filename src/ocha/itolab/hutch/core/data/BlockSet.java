@@ -173,6 +173,8 @@ public class BlockSet {
 			String age = ols.getOriginalAge(0);
 			String gender = ols.getOriginalGender(0);
 			int hour = ols.getOriginalHour(0);
+			Date date = ols.getOriginalDate(0);
+			//System.out.println(date);
 			
 			if(shouldDisplayed(x0, y0, hour, age, gender) == false)
 				continue;

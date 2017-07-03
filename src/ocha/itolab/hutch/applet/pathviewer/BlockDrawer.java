@@ -45,7 +45,6 @@ public class BlockDrawer {
 	gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 	Xrotate = Transformer.getViewRotateX();
 	
-	// for each rectangle
 	int cid = 0;
 		for(int k = 0; k < 24; k++){
 			if((Xrotate%8 >= 2)&&(Xrotate%8<6)) blocktime = 23-k;
@@ -155,16 +154,14 @@ public class BlockDrawer {
 				    }
 			        
 			        //ブロックまでの線をつける
-			        //gl2.glColor4d(1.0, 1.0, 1.0, 1.0);
-			        if(transparency > 0.1){
+			        /*if(transparency > 0.1){
 			        	gl2.glColor4d(rr, gg, bb, 1.0);
 			        	double center_x = bpos[0][0] + (bpos[2][0]-bpos[0][0])/2;
 			        	double center_y = bpos[3][1] + (bpos[0][1]-bpos[3][1])/2;
 				        gl2.glBegin(GL2.GL_LINE_LOOP);
 				    	gl2.glVertex3f((float)center_x, (float)center_y, 0.0f);
 				    	gl2.glVertex3f((float)center_x, (float)center_y, (float)blocktime*(float)thick);
-				    	gl2.glEnd();
-			        }
+				    	gl2.glEnd();*/
 			        //目盛をつける
 			        gl2.glColor4d(1.0, 1.0, 1.0, 1.0);
 			        gl2.glBegin(GL2.GL_LINE_LOOP);
