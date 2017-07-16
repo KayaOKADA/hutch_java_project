@@ -13,7 +13,10 @@ public class TimePanel {
 			timepanel[i] = new JPanel();
 			timepanel[i].setPreferredSize(new Dimension(1, 1));
 			//timecolor[i] = BlockSet.setPanelcolormap(i);
-			timepanel[i].setBackground(colormap[i]);
+			int time_sequence = 0;
+			if((i>=0)&&(i<5)) time_sequence = i + 19;
+			else time_sequence = i - 5;
+			timepanel[i].setBackground(colormap[time_sequence]);
 			panel.add(timepanel[i]);
 		}
 	}

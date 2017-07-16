@@ -150,7 +150,8 @@ public class BlockSet {
 	}
 	
 	public void setLooktime(int t){
-		looktime = t;
+		if((t>=0)&&(t<5)) looktime = t+19;
+		else looktime = t - 5;
 	}
 	
 	public int getLooktime() {
